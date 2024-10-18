@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Command Please</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container" id="main-container">
+        <h1>Your Command Please!</h1>
+        <div class="input-wrapper">
+            <input type="text" id="commandInput" placeholder="Enter your command...">
+            <div id="autofill"></div>
+        </div>
+        <div id="suggestions"></div>
+    </div>
+    <div class="container" id="new-command-container" style="display: none;">
+        <h1>Add New Command</h1>
+        <div class="input-wrapper">
+            <input type="text" id="newCommandName" placeholder="Enter command name...">
+        </div>
+        <div class="input-wrapper">
+            <input type="text" id="newCommandUrl" placeholder="Enter URL or Chrome address...">
+        </div>
+        <div class="button-wrapper">
+            <button id="saveNewCommand">Save Command</button>
+        </div>
+    </div>
+    <div class="container" id="new-search-command-container" style="display: none;">
+        <h1>Add New Search Command</h1>
+        <p class="guidance">Go to the website whose search functionality you want to unlock and then search for "abc xyz pqr" on the same. Once you search it, copy the URL in your address bar and paste in the "Search URL" field below.</p>
+        <div class="input-wrapper">
+            <input type="text" id="newSearchCommandName" placeholder="Enter command name...">
+        </div>
+        <div class="input-wrapper">
+            <input type="text" id="newSearchCommandUrl" placeholder="Paste the search URL here...">
+        </div>
+        <div class="button-wrapper">
+            <button id="saveNewSearchCommand">Save Search Command</button>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>

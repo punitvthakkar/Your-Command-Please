@@ -1,0 +1,50 @@
+{
+    "manifest_version": 3,
+    "name": "Your Command Please",
+    "version": "1.0",
+    "description": "Plain text commands to simplify your workflow",
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"],
+            "run_at": "document_idle"
+        }
+    ],
+    "permissions": ["tabs", "history", "downloads", "bookmarks", "storage", "activeTab", "management", "cookies", "scripting"],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "commands": {
+        "_execute_action": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+Space",
+                "mac": "Command+Shift+Space"
+            },
+            "description": "Open COMMANDER"
+        },
+        "mute_tab": {
+            "description": "Mute Tab"
+        },
+        "unmute_tab": {
+            "description": "Unmute Tab"
+        },
+        "clear_cache": {
+            "description": "Clear Cache"
+        },
+        "clear_cookies": {
+            "description": "Clear Cookies"
+        },
+        "bookmark": {
+            "description": "Bookmark"
+        },
+        "task_manager": {
+            "description": "Task Manager"
+        },
+        "link_extract": {
+            "description": "Link Extract"
+        }
+    }
+}

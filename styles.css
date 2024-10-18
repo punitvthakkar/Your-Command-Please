@@ -1,0 +1,191 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #2d3748;
+    --container-bg: #ffffff;
+    --container-shadow: rgba(0, 0, 0, 0.1);
+    --input-border: #e2e8f0;
+    --input-focus-border: #4299e1;
+    --input-focus-shadow: rgba(66, 153, 225, 0.5);
+    --autofill-color: #a0aec0;
+    --command-hover: #edf2f7;
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #cbd5e0;
+    --scrollbar-thumb-hover: #a0aec0;
+    --button-bg: #4299e1;
+    --button-hover: #3182ce;
+    --button-active: #2c5282;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #1a202c;
+        --text-color: #e2e8f0;
+        --container-bg: #2d3748;
+        --container-shadow: rgba(255, 255, 255, 0.1);
+        --input-border: #4a5568;
+        --input-focus-border: #4299e1;
+        --input-focus-shadow: rgba(66, 153, 225, 0.5);
+        --autofill-color: #718096;
+        --command-hover: #4a5568;
+        --scrollbar-track: #2d3748;
+        --scrollbar-thumb: #4a5568;
+        --scrollbar-thumb-hover: #718096;
+        --button-bg: #4299e1;
+        --button-hover: #3182ce;
+        --button-active: #2c5282;
+    }
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    width: 350px;
+    margin: 0;
+    padding: 20px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+    background-color: var(--container-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px var(--container-shadow);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+h1 {
+    font-size: 24px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.input-wrapper {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+#commandInput, #newCommandName, #newCommandUrl, #newSearchCommandName, #newSearchCommandUrl {
+    width: 100%;
+    padding: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s, color 0.3s;
+    position: relative;
+    z-index: 2;
+    background: transparent;
+    color: var(--text-color);
+}
+
+#commandInput:focus, #newCommandName:focus, #newCommandUrl:focus, #newSearchCommandName:focus, #newSearchCommandUrl:focus {
+    outline: none;
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 3px var(--input-focus-shadow);
+}
+
+#autofill {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    font-size: 16px;
+    color: var(--autofill-color);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+}
+
+#suggestions {
+    margin-top: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.command {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.command:hover, .command.selected {
+    background-color: var(--command-hover);
+}
+
+.command-text {
+    flex-grow: 1;
+}
+
+.command-actions {
+    display: flex;
+    align-items: center;
+}
+
+.pin-icon, .delete-icon {
+    cursor: pointer;
+    margin-left: 8px;
+    font-size: 16px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.pin-icon:hover, .delete-icon:hover {
+    opacity: 1;
+}
+
+#suggestions::-webkit-scrollbar {
+    width: 8px;
+}
+
+#suggestions::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 4px;
+}
+
+#suggestions::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+
+#suggestions::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+#saveNewCommand, #saveNewSearchCommand {
+    width: 100%;
+    padding: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background-color: var(--button-bg);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#saveNewCommand:hover, #saveNewSearchCommand:hover {
+    background-color: var(--button-hover);
+}
+
+#saveNewCommand:active, #saveNewSearchCommand:active {
+    background-color: var(--button-active);
+}
+
+.button-wrapper {
+    margin-top: 20px;
+}
+
+.guidance {
+    font-size: 14px;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
