@@ -1,0 +1,76 @@
+/* Options page layout — reuses tokens/components from styles.css */
+body.options {
+    width: auto;
+    max-width: 100%;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
+
+.page-head { text-align: center; margin-bottom: 28px; }
+.page-head h1 { font-size: 26px; font-weight: 700; margin: 0; }
+.tagline { color: var(--text-dim); margin: 6px 0 0; font-size: 14px; }
+
+.card { padding: 22px 24px; margin-bottom: 20px; border-radius: 20px; }
+.card h2 {
+    font-size: 17px; font-weight: 600; margin: 0 0 16px;
+    display: flex; align-items: baseline; gap: 10px;
+}
+.card h2 .sub { font-size: 12px; font-weight: 400; color: var(--text-dim); }
+code { background: var(--chip-bg); padding: 1px 6px; border-radius: 6px; font-size: 12px; }
+
+.field {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--field-brd);
+}
+.field:last-child { border-bottom: none; }
+.field label { font-size: 14px; }
+.field select, .field input[type="number"] {
+    font-family: var(--font); font-size: 14px; color: var(--text);
+    background: var(--field-bg); border: 1px solid var(--field-brd);
+    border-radius: 10px; padding: 8px 10px; min-width: 160px;
+}
+.field input[type="number"] { width: 80px; min-width: 0; }
+
+/* iOS-style toggle */
+.field.toggle input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 46px; height: 28px; border-radius: 999px;
+    background: var(--field-brd); position: relative; cursor: pointer;
+    transition: background .2s;
+}
+.field.toggle input[type="checkbox"]::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 22px; height: 22px; border-radius: 50%; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .2s;
+}
+.field.toggle input[type="checkbox"]:checked { background: var(--accent); }
+.field.toggle input[type="checkbox"]:checked::after { transform: translateX(18px); }
+
+.list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.list-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 12px; background: var(--field-bg);
+    border: 1px solid var(--field-brd);
+}
+.list-item .li-body { flex: 1; min-width: 0; }
+.list-item .li-title { font-size: 14px; font-weight: 600; }
+.list-item .li-sub { font-size: 12px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-item .li-actions { display: flex; gap: 6px; }
+
+.add-row { display: flex; flex-direction: column; gap: 8px; }
+.add-row input, .add-row textarea {
+    width: 100%; font-family: var(--font); font-size: 14px; color: var(--text);
+    background: var(--field-bg); border: 1px solid var(--field-brd);
+    border-radius: 10px; padding: 10px 12px; resize: vertical;
+}
+.add-row .btn { align-self: flex-start; }
+
+.btn-row-left { display: flex; gap: 10px; }
+.hint { font-size: 13px; color: var(--text-dim); line-height: 1.5; margin: 0 0 14px; }
+.icon-btn.sm { width: 30px; height: 30px; font-size: 14px; }

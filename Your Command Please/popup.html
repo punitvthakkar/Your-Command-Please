@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Command Please</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="glass flush" id="main-container">
+        <div class="search-bar">
+            <span class="search-glyph" aria-hidden="true">⌘</span>
+            <div class="input-wrapper">
+                <div id="autofill"></div>
+                <input type="text" id="commandInput" placeholder="Type a command…" autocomplete="off" spellcheck="false">
+            </div>
+            <button class="icon-btn" id="settingsBtn" title="Settings">⚙︎</button>
+        </div>
+        <div id="suggestions" role="listbox"></div>
+        <div class="footer-hint">
+            <span><kbd>↵</kbd> run</span>
+            <span><kbd>⇥</kbd> complete</span>
+            <span><kbd>↑</kbd><kbd>↓</kbd> move</span>
+            <span><kbd>esc</kbd> close</span>
+        </div>
+    </div>
+
+    <!-- Inline argument prompt (replaces window.prompt) -->
+    <div class="glass flush hidden" id="prompt-container">
+        <div class="panel-head">
+            <button class="icon-btn back" id="promptBack" title="Back">‹</button>
+            <h2 id="promptTitle">Enter value</h2>
+        </div>
+        <input type="text" id="promptInput" placeholder="Type here…" autocomplete="off">
+        <div class="btn-row">
+            <button class="btn ghost" id="promptCancel">Cancel</button>
+            <button class="btn primary" id="promptOk">Continue</button>
+        </div>
+    </div>
+
+    <!-- Add / edit command -->
+    <div class="glass flush hidden" id="edit-command-container">
+        <div class="panel-head">
+            <button class="icon-btn back" id="editBack" title="Back">‹</button>
+            <h2 id="editTitle">New Command</h2>
+        </div>
+        <input type="text" id="editName" placeholder="Command name (e.g. new linear issue)" autocomplete="off">
+        <input type="text" id="editUrl" placeholder="URL or chrome:// address" autocomplete="off">
+        <div class="btn-row">
+            <button class="btn ghost" id="editCancel">Cancel</button>
+            <button class="btn primary" id="editSave">Save</button>
+        </div>
+    </div>
+
+    <!-- Add search command -->
+    <div class="glass flush hidden" id="search-command-container">
+        <div class="panel-head">
+            <button class="icon-btn back" id="searchBack" title="Back">‹</button>
+            <h2>New Search Command</h2>
+        </div>
+        <p class="guidance">Search for <b>abc xyz pqr</b> on the target site, copy the resulting URL from the address bar, and paste it below. We'll turn it into a reusable search.</p>
+        <input type="text" id="searchName" placeholder="Command name (e.g. search github)" autocomplete="off">
+        <input type="text" id="searchUrl" placeholder="Paste the search URL here…" autocomplete="off">
+        <div class="btn-row">
+            <button class="btn ghost" id="searchCancel">Cancel</button>
+            <button class="btn primary" id="searchSave">Save</button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="shared.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Command Please — Settings</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="options.css">
+</head>
+<body class="options">
+    <div class="page">
+        <header class="page-head">
+            <h1>Your Command Please</h1>
+            <p class="tagline">Command palette settings</p>
+        </header>
+
+        <!-- Preferences -->
+        <section class="glass card">
+            <h2>Preferences</h2>
+            <div class="field">
+                <label for="theme">Theme</label>
+                <select id="theme">
+                    <option value="auto">Automatic (match system)</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="pinLimit">Maximum pinned commands</label>
+                <input type="number" id="pinLimit" min="1" max="20" step="1">
+            </div>
+            <div class="field toggle">
+                <label for="calculator">Inline calculator &amp; unit conversion</label>
+                <input type="checkbox" id="calculator">
+            </div>
+            <div class="field toggle">
+                <label for="fuzzy">Fuzzy matching</label>
+                <input type="checkbox" id="fuzzy">
+            </div>
+        </section>
+
+        <!-- Snippets -->
+        <section class="glass card">
+            <h2>Text Snippets <span class="sub">use via <code>insert &lt;name&gt;</code></span></h2>
+            <div id="snippetList" class="list"></div>
+            <div class="add-row">
+                <input type="text" id="snipName" placeholder="Snippet name (e.g. signature)">
+                <textarea id="snipText" placeholder="Snippet text…" rows="2"></textarea>
+                <button class="btn primary" id="addSnippet">Add</button>
+            </div>
+        </section>
+
+        <!-- Macros -->
+        <section class="glass card">
+            <h2>Macros <span class="sub">open several tabs at once</span></h2>
+            <div id="macroList" class="list"></div>
+            <div class="add-row">
+                <input type="text" id="macroName" placeholder="Macro name (e.g. morning routine)">
+                <textarea id="macroUrls" placeholder="One URL per line…" rows="3"></textarea>
+                <button class="btn primary" id="addMacro">Add</button>
+            </div>
+        </section>
+
+        <!-- Custom commands -->
+        <section class="glass card">
+            <h2>Custom Commands</h2>
+            <div id="commandList" class="list"></div>
+            <p class="hint" id="noCommands" style="display:none">No custom commands yet. Add them from the palette with <b>new command</b>.</p>
+        </section>
+
+        <!-- Import / export -->
+        <section class="glass card">
+            <h2>Backup</h2>
+            <p class="hint">Export your commands, snippets, macros and settings to a JSON file, or import them on another device.</p>
+            <div class="btn-row-left">
+                <button class="btn ghost" id="exportBtn">Export JSON</button>
+                <button class="btn ghost" id="importBtn">Import JSON</button>
+                <input type="file" id="importFile" accept="application/json" hidden>
+            </div>
+        </section>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="shared.js"></script>
+    <script src="options.js"></script>
+</body>
+</html>

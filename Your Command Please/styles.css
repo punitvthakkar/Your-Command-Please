@@ -1,0 +1,248 @@
+/* ============================================================
+   Your Command Please — macOS Tahoe "Liquid Glass" UI
+   ============================================================ */
+:root {
+    color-scheme: light dark;
+
+    --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+            'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+    /* Light (default) */
+    --accent: #0a84ff;
+    --accent-soft: rgba(10, 132, 255, 0.16);
+    --page-1: #f4f6fb;
+    --page-2: #e9edf6;
+    --glass-bg: rgba(255, 255, 255, 0.62);
+    --glass-brd: rgba(255, 255, 255, 0.7);
+    --glass-shadow: 0 12px 40px rgba(20, 30, 60, 0.18), 0 1px 0 rgba(255,255,255,0.6) inset;
+    --text: #1c1c1e;
+    --text-dim: #6b7280;
+    --field-bg: rgba(255, 255, 255, 0.55);
+    --field-brd: rgba(120, 130, 150, 0.28);
+    --hover: rgba(120, 130, 150, 0.14);
+    --sel-bg: var(--accent);
+    --sel-text: #ffffff;
+    --chip-bg: rgba(120, 130, 150, 0.16);
+    --kbd-bg: rgba(255,255,255,0.7);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --accent: #0a84ff;
+        --accent-soft: rgba(10, 132, 255, 0.24);
+        --page-1: #1b1d22;
+        --page-2: #0f1013;
+        --glass-bg: rgba(40, 42, 48, 0.58);
+        --glass-brd: rgba(255, 255, 255, 0.12);
+        --glass-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255,255,255,0.08) inset;
+        --text: #f2f2f7;
+        --text-dim: #9aa0aa;
+        --field-bg: rgba(255, 255, 255, 0.08);
+        --field-brd: rgba(255, 255, 255, 0.14);
+        --hover: rgba(255, 255, 255, 0.08);
+        --chip-bg: rgba(255, 255, 255, 0.12);
+        --kbd-bg: rgba(255,255,255,0.14);
+    }
+}
+
+/* Manual overrides from settings */
+body.theme-light { --accent:#0a84ff; --page-1:#f4f6fb; --page-2:#e9edf6; --glass-bg:rgba(255,255,255,0.62); --glass-brd:rgba(255,255,255,0.7); --glass-shadow:0 12px 40px rgba(20,30,60,0.18),0 1px 0 rgba(255,255,255,0.6) inset; --text:#1c1c1e; --text-dim:#6b7280; --field-bg:rgba(255,255,255,0.55); --field-brd:rgba(120,130,150,0.28); --hover:rgba(120,130,150,0.14); --chip-bg:rgba(120,130,150,0.16); --kbd-bg:rgba(255,255,255,0.7); }
+body.theme-dark  { --accent:#0a84ff; --page-1:#1b1d22; --page-2:#0f1013; --glass-bg:rgba(40,42,48,0.58); --glass-brd:rgba(255,255,255,0.12); --glass-shadow:0 16px 48px rgba(0,0,0,0.55),0 1px 0 rgba(255,255,255,0.08) inset; --text:#f2f2f7; --text-dim:#9aa0aa; --field-bg:rgba(255,255,255,0.08); --field-brd:rgba(255,255,255,0.14); --hover:rgba(255,255,255,0.08); --chip-bg:rgba(255,255,255,0.12); --kbd-bg:rgba(255,255,255,0.14); }
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: var(--font);
+    width: 460px;
+    margin: 0;
+    padding: 0;
+    color: var(--text);
+    background:
+        radial-gradient(140% 120% at 0% 0%, var(--page-1) 0%, var(--page-2) 100%);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Card style — used by the options page */
+.glass {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid var(--glass-brd);
+    border-radius: 20px;
+    box-shadow: var(--glass-shadow);
+    padding: 12px;
+    animation: pop .18s cubic-bezier(.2,.9,.3,1.2);
+}
+
+/* Popup panels fill the browser popup window flush to its edges — no
+   floating card inside the OS rectangle. Rounding lives on the field/rows. */
+.glass.flush {
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 14px 14px 8px;
+    animation: none;
+}
+
+@keyframes pop { from { transform: scale(.98); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.hidden { display: none !important; }
+
+/* -------- Search bar -------- */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--field-bg);
+    border: 1px solid var(--field-brd);
+    border-radius: 14px;
+    transition: border-color .15s, box-shadow .15s;
+}
+.search-bar:focus-within {
+    border-color: var(--accent);
+    box-shadow: none;
+}
+.search-glyph { font-size: 15px; color: var(--text-dim); width: 20px; text-align: center; }
+
+.input-wrapper { position: relative; flex: 1; display: flex; }
+/* The ghost autofill must share the input's box model exactly so the
+   typed prefix overlaps the completion pixel-for-pixel. */
+#autofill, #commandInput {
+    width: 100%;
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 24px;
+    padding: 5px 2px;
+    border: none;
+    box-sizing: border-box;
+    letter-spacing: normal;
+    white-space: pre;
+}
+#autofill {
+    position: absolute; left: 0; top: 0;
+    color: var(--text-dim); opacity: .5;
+    pointer-events: none; overflow: hidden;
+}
+#commandInput {
+    outline: none; background: transparent; color: var(--text); margin: 0;
+}
+#commandInput::placeholder { color: var(--text-dim); }
+
+.icon-btn {
+    border: none; background: transparent; cursor: pointer;
+    color: var(--text-dim); font-size: 16px; width: 30px; height: 30px;
+    border-radius: 9px; transition: background .15s, color .15s;
+}
+.icon-btn:hover { background: var(--hover); color: var(--text); }
+.icon-btn.back { font-size: 22px; line-height: 1; }
+
+/* -------- Suggestions -------- */
+#suggestions {
+    position: relative;
+    margin-top: 10px;
+    max-height: 340px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 2px;
+}
+.cat-head {
+    font-size: 11px; font-weight: 600; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--text-dim);
+    padding: 10px 8px 4px;
+}
+.row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 12px; cursor: pointer;
+    transition: background .12s;
+}
+.row:hover { background: var(--hover); }
+.row.selected { background: var(--sel-bg); color: var(--sel-text); }
+.row.selected .row-sub, .row.selected .badge, .row.selected .row-act { color: rgba(255,255,255,.85); }
+.row.selected .badge { background: rgba(255,255,255,.22); }
+
+.row-icon { font-size: 16px; width: 22px; text-align: center; flex-shrink: 0; }
+.row-body { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.row-label { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row-sub { font-size: 11.5px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.badge {
+    font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 999px;
+    background: var(--chip-bg); color: var(--text-dim); flex-shrink: 0;
+    text-transform: capitalize;
+}
+
+.row-actions { display: flex; gap: 2px; flex-shrink: 0; opacity: 0; transition: opacity .12s; }
+.row:hover .row-actions, .row.selected .row-actions { opacity: 1; }
+.row-act {
+    border: none; background: transparent; cursor: pointer; color: var(--text-dim);
+    font-size: 13px; width: 24px; height: 24px; border-radius: 7px;
+}
+.row-act:hover { background: var(--hover); color: var(--text); }
+.row.selected .row-act:hover { background: rgba(255,255,255,.25); color: #fff; }
+
+.empty { padding: 24px; text-align: center; color: var(--text-dim); font-size: 13px; }
+
+.footer-hint {
+    display: flex; gap: 14px; justify-content: center;
+    padding: 10px 4px 2px; font-size: 11px; color: var(--text-dim);
+}
+kbd {
+    font-family: var(--font); font-size: 10px; padding: 1px 5px;
+    border-radius: 5px; background: var(--kbd-bg);
+    border: 1px solid var(--field-brd); margin: 0 1px;
+}
+
+/* Scrollbar */
+#suggestions::-webkit-scrollbar { width: 8px; }
+#suggestions::-webkit-scrollbar-thumb { background: var(--chip-bg); border-radius: 8px; }
+#suggestions::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* -------- Panels (prompt / edit) -------- */
+.panel-head { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.panel-head h2 { font-size: 16px; font-weight: 600; margin: 0; }
+.glass h2 { margin-top: 0; }
+
+.glass input[type="text"] {
+    width: 100%; padding: 11px 12px; margin-bottom: 10px;
+    font-family: var(--font); font-size: 15px; color: var(--text);
+    background: var(--field-bg); border: 1px solid var(--field-brd);
+    border-radius: 12px; outline: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+.glass input[type="text"]:focus { border-color: var(--accent); box-shadow: none; }
+
+.guidance { font-size: 12.5px; line-height: 1.5; color: var(--text-dim); margin: 0 0 12px; }
+
+.btn-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+.btn {
+    padding: 9px 16px; font-family: var(--font); font-size: 14px; font-weight: 600;
+    border-radius: 11px; border: 1px solid transparent; cursor: pointer;
+    transition: transform .08s, filter .15s, background .15s;
+}
+.btn:active { transform: scale(.97); }
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.ghost { background: var(--field-bg); border-color: var(--field-brd); color: var(--text); }
+.btn.ghost:hover { background: var(--hover); }
+
+/* -------- Sharp rectangles everywhere (no rounded corners) -------- */
+.glass, .search-bar, .input-wrapper, .icon-btn, .icon-btn.back,
+#suggestions, .cat-head, .row, .badge, .row-act,
+.glass input[type="text"], .btn, kbd, .toast,
+#suggestions::-webkit-scrollbar, #suggestions::-webkit-scrollbar-thumb {
+    border-radius: 0 !important;
+}
+
+/* -------- Toast -------- */
+.toast {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+    background: rgba(30,30,34,0.9); color: #fff;
+    -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    padding: 9px 16px; border-radius: 12px; font-size: 13px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    animation: pop .18s ease; z-index: 1000;
+}
