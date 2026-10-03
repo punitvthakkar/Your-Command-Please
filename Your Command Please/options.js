@@ -1,16 +1,7 @@
 const $ = document.querySelector.bind(document);
-const { escapeHtml, loadState, DEFAULT_SETTINGS } = window.YCP;
+const { escapeHtml, loadState, DEFAULT_SETTINGS, applyTheme } = window.YCP;
 
 let state = { customCommands: {}, pinned: [], settings: {}, snippets: [], macros: [], stats: {}, history: [] };
-
-/* ---------- theme ---------- */
-function applyTheme() {
-    const t = state.settings.theme || 'auto';
-    document.body.classList.remove('theme-dark', 'theme-light', 'options-tmp');
-    document.body.classList.add('options');
-    if (t === 'dark') document.body.classList.add('theme-dark');
-    else if (t === 'light') document.body.classList.add('theme-light');
-}
 
 /* ---------- persistence ---------- */
 function saveSync(partial) {
@@ -26,14 +17,15 @@ function saveSync(partial) {
 
 /* ---------- preferences ---------- */
 function bindPrefs() {
-    $('#theme').value = state.settings.theme || 'auto';
+    const theme = $(`input[name="theme"][value="${state.settings.theme || 'auto'}"]`);
+    if (theme) theme.checked = true;
     $('#pinLimit').value = state.settings.pinLimit || 3;
     $('#calculator').checked = state.settings.calculator !== false;
     $('#fuzzy').checked = state.settings.fuzzy !== false;
 
-    $('#theme').addEventListener('change', (e) => {
-        state.settings.theme = e.target.value; saveSync({}); applyTheme();
-    });
+    document.querySelectorAll('input[name="theme"]').forEach(r => r.addEventListener('change', (e) => {
+        state.settings.theme = e.target.value; saveSync({}); applyTheme(e.target.value);
+    }));
     $('#pinLimit').addEventListener('change', (e) => {
         const v = Math.max(1, Math.min(20, parseInt(e.target.value) || 3));
         e.target.value = v; state.settings.pinLimit = v; saveSync({});
@@ -46,13 +38,13 @@ function bindPrefs() {
 function renderSnippets() {
     const list = $('#snippetList');
     list.innerHTML = state.snippets.map((s, i) => `
-        <div class="list-item">
+        <div class="item">
             <div class="li-body">
                 <div class="li-title">insert ${escapeHtml(s.name)}</div>
                 <div class="li-sub">${escapeHtml(s.text)}</div>
             </div>
             <div class="li-actions">
-                <button class="icon-btn sm" data-del-snip="${i}" title="Delete">🗑</button>
+                <button class="icon-btn" data-del-snip="${i}" title="Delete" aria-label="Delete">${icon('delete')}</button>
             </div>
         </div>`).join('') || '<p class="hint">No snippets yet.</p>';
 }
@@ -70,13 +62,13 @@ function addSnippet() {
 function renderMacros() {
     const list = $('#macroList');
     list.innerHTML = state.macros.map((m, i) => `
-        <div class="list-item">
+        <div class="item">
             <div class="li-body">
                 <div class="li-title">${escapeHtml(m.name)}</div>
                 <div class="li-sub">${escapeHtml(m.urls.length + ' tab(s): ' + m.urls.join(', '))}</div>
             </div>
             <div class="li-actions">
-                <button class="icon-btn sm" data-del-macro="${i}" title="Delete">🗑</button>
+                <button class="icon-btn" data-del-macro="${i}" title="Delete" aria-label="Delete">${icon('delete')}</button>
             </div>
         </div>`).join('') || '<p class="hint">No macros yet.</p>';
 }
@@ -95,16 +87,16 @@ function addMacro() {
 function renderCommands() {
     const list = $('#commandList');
     const entries = Object.entries(state.customCommands);
-    $('#noCommands').style.display = entries.length ? 'none' : 'block';
+    $('#noCommands').hidden = entries.length > 0;
     list.innerHTML = entries.map(([name, action]) => `
-        <div class="list-item" data-name="${escapeHtml(name)}">
+        <div class="item" data-name="${escapeHtml(name)}">
             <div class="li-body">
                 <div class="li-title">${escapeHtml(name)}</div>
-                <div class="li-sub">${escapeHtml(action.replace(/^SEARCH:/, '🔍 '))}</div>
+                <div class="li-sub">${escapeHtml(action.replace(/^SEARCH:/, 'Search: '))}</div>
             </div>
             <div class="li-actions">
-                <button class="icon-btn sm" data-edit-cmd="${escapeHtml(name)}" title="Edit">✎</button>
-                <button class="icon-btn sm" data-del-cmd="${escapeHtml(name)}" title="Delete">🗑</button>
+                <button class="icon-btn" data-edit-cmd="${escapeHtml(name)}" title="Edit" aria-label="Edit">${icon('edit')}</button>
+                <button class="icon-btn" data-del-cmd="${escapeHtml(name)}" title="Delete" aria-label="Delete">${icon('delete')}</button>
             </div>
         </div>`).join('');
 }
@@ -164,6 +156,8 @@ function toast(msg) {
 function renderAll() { renderSnippets(); renderMacros(); renderCommands(); }
 
 /* ---------- wiring ---------- */
+$('#exportBtn').innerHTML = icon('download') + 'Export JSON';
+$('#importBtn').innerHTML = icon('upload') + 'Import JSON';
 $('#addSnippet').addEventListener('click', addSnippet);
 $('#addMacro').addEventListener('click', addMacro);
 $('#exportBtn').addEventListener('click', exportJson);
@@ -171,7 +165,8 @@ $('#importBtn').addEventListener('click', () => $('#importFile').click());
 $('#importFile').addEventListener('change', (e) => { if (e.target.files[0]) importJson(e.target.files[0]); });
 
 document.addEventListener('click', (e) => {
-    const t = e.target;
+    const t = e.target.closest('button');
+    if (!t) return;
     if (t.dataset.delSnip != null) { state.snippets.splice(+t.dataset.delSnip, 1); saveSync({}); renderSnippets(); }
     else if (t.dataset.delMacro != null) { state.macros.splice(+t.dataset.delMacro, 1); saveSync({}); renderMacros(); }
     else if (t.dataset.delCmd) { delete state.customCommands[t.dataset.delCmd]; state.pinned = state.pinned.filter(n => n !== t.dataset.delCmd); saveSync({}); renderCommands(); }
@@ -182,7 +177,7 @@ document.addEventListener('click', (e) => {
 loadState((s) => {
     state = s;
     state.settings = Object.assign({}, DEFAULT_SETTINGS, state.settings);
-    applyTheme();
+    applyTheme(state.settings.theme);
     bindPrefs();
     renderAll();
 });

@@ -1,0 +1,68 @@
+/* Material Next: speculative design forecast (frozen 2026-09-24). Not an official Google design.
+   Tokens: seed #37474F (charcoal), dial "calm" (neutral scheme, no-overshoot springs, corners ×0.75),
+   from material-next/scripts/generate-next.mjs, trimmed to the roles this extension uses.
+   Light/dark resolve through color-scheme, which [data-theme] overrides. */
+
+:root {
+    color-scheme: light dark;
+
+    /* ---- Color roles: light-dark(light, dark) ---- */
+    --md-sys-color-primary: light-dark(#536068, #BAC9D1);
+    --md-sys-color-on-primary: light-dark(#FFFFFF, #253239);
+    --md-sys-color-secondary: light-dark(#585F64, #C0C8CD);
+    --md-sys-color-secondary-container: light-dark(#DCE4E9, #40484C);
+    --md-sys-color-on-secondary-container: light-dark(#40484C, #DCE4E9);
+    --md-sys-color-error: light-dark(#BA1A1A, #FFB4AB);
+    --md-sys-color-surface: light-dark(#FBF9F9, #121314);
+    --md-sys-color-on-surface: light-dark(#1B1C1C, #E3E2E3);
+    --md-sys-color-on-surface-variant: light-dark(#464747, #C7C6C7);
+    --md-sys-color-surface-container-low: light-dark(#F5F3F4, #1B1C1C);
+    --md-sys-color-surface-container: light-dark(#EFEDEE, #1F2020);
+    --md-sys-color-surface-container-high: light-dark(#E9E8E8, #292A2B);
+    --md-sys-color-surface-container-highest: light-dark(#E3E2E3, #343535);
+    --md-sys-color-inverse-surface: light-dark(#303031, #E3E2E3);
+    --md-sys-color-inverse-on-surface: light-dark(#F2F0F1, #303031);
+    --md-sys-color-outline: light-dark(#777778, #919091);
+    --md-sys-color-outline-variant: light-dark(#C7C6C7, #464747);
+
+    /* ---- Shape: M3 scale × 0.75 (calm) ---- */
+    --md-sys-shape-corner-extra-small: 3px;
+    --md-sys-shape-corner-small: 6px;
+    --md-sys-shape-corner-medium: 9px;
+    --md-sys-shape-corner-large: 12px;
+    --md-sys-shape-corner-extra-large: 21px;
+
+    /* ---- State layers ---- */
+    --md-sys-state-hover: 0.08;
+    --md-sys-state-pressed: 0.10;
+
+    /* ---- Depth (only depth-3 is used: snackbar) ---- */
+    --mn-depth-3-shadow: 0 1px 3px rgb(0 0 0 / .30), 0 4px 8px 3px rgb(0 0 0 / .15);
+
+    /* ---- Motion: calm springs as linear() + settle duration ---- */
+    --mn-spring: linear(0, 0.0229, 0.0789, 0.1534, 0.2364, 0.3211, 0.4034, 0.4806, 0.5514, 0.6151, 0.6716, 0.7211, 0.7642, 0.8014, 0.8333, 0.8604, 0.8835, 0.903, 0.9194, 0.9332, 0.9447, 0.9543, 0.9623, 0.9689, 0.9744, 0.979, 0.9828, 0.9859, 0.9884, 0.9905, 0.9923, 0.9937, 0.9948, 0.9958, 0.9966, 0.9972, 0.9977, 0.9981, 0.9985, 0.9988, 1);
+    --mn-motion-spatial-fast: 247ms var(--mn-spring);
+    --mn-motion-effects-fast: 150ms var(--mn-spring);
+    --mn-motion-effects-default: 231ms var(--mn-spring);
+
+    /* ---- Type: system faces load instantly; Flex faces are used if installed ---- */
+    --md-ref-typeface-brand: 'Google Sans Flex', 'Google Sans', 'Roboto Flex', Roboto, system-ui, sans-serif;
+    --md-ref-typeface-plain: 'Roboto Flex', Roboto, system-ui, sans-serif;
+
+    /* M3 type scale as font shorthands (pair with the tracking noted) — only the styles used */
+    --type-headline-medium: 400 28px/36px var(--md-ref-typeface-brand);   /* 0 */
+    --type-title-large: 400 22px/28px var(--md-ref-typeface-brand);       /* 0 */
+    --type-title-medium: 500 16px/24px var(--md-ref-typeface-brand);      /* .15px */
+    --type-title-small: 500 14px/20px var(--md-ref-typeface-brand);       /* .1px */
+    --type-body-large: 400 16px/24px var(--md-ref-typeface-plain);        /* .5px */
+    --type-body-medium: 400 14px/20px var(--md-ref-typeface-plain);       /* .25px */
+    --type-body-small: 400 12px/16px var(--md-ref-typeface-plain);        /* .4px */
+    --type-label-large: 500 14px/20px var(--md-ref-typeface-plain);       /* .1px */
+    --type-label-medium: 500 12px/16px var(--md-ref-typeface-plain);      /* .5px */
+}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+@media (prefers-reduced-motion: reduce) {
+    :root { --mn-motion-spatial-fast: 0ms linear; }
+}

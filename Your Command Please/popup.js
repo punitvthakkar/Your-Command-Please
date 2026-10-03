@@ -1,5 +1,5 @@
 const $ = document.querySelector.bind(document);
-const { BUILTIN, CATEGORY_ORDER, escapeHtml, fuzzyScore, frecency, recordUse, compute, loadState } = window.YCP;
+const { BUILTIN, CATEGORY_ORDER, escapeHtml, fuzzyScore, frecency, recordUse, compute, loadState, applyTheme } = window.YCP;
 
 const el = {
     input: $('#commandInput'),
@@ -38,20 +38,12 @@ let selectedIndex = -1;
 let renderToken = 0;
 let editingOriginalName = null;
 
-/* ---------------- Theme ---------------- */
-function applyTheme() {
-    const t = state.settings.theme || 'auto';
-    document.body.classList.remove('theme-dark', 'theme-light');
-    if (t === 'dark') document.body.classList.add('theme-dark');
-    else if (t === 'light') document.body.classList.add('theme-light');
-}
-
 /* ---------------- Command model ---------------- */
 function iconForAction(action) {
-    if (action.startsWith('SEARCH:')) return '🔍';
-    if (action.startsWith('http')) return '🌐';
-    if (action.startsWith('chrome://')) return '🧩';
-    return '▶️';
+    if (action.startsWith('SEARCH:')) return 'search';
+    if (action.startsWith('http')) return 'public';
+    if (action.startsWith('chrome://')) return 'extension';
+    return 'play_arrow';
 }
 
 function getAllCommands() {
@@ -60,10 +52,10 @@ function getAllCommands() {
         list.push({ name, action, category: 'Custom', icon: iconForAction(action), custom: true });
     }
     state.snippets.forEach((s, i) => {
-        list.push({ name: 'insert ' + s.name, action: 'SNIPPET:' + i, category: 'Snippets', icon: '📋', snippet: s });
+        list.push({ name: 'insert ' + s.name, action: 'SNIPPET:' + i, category: 'Snippets', icon: 'content_paste', snippet: s });
     });
     state.macros.forEach((m, i) => {
-        list.push({ name: m.name.toLowerCase(), action: 'MACRO:' + i, category: 'Macros', icon: '🧩', macro: m });
+        list.push({ name: m.name.toLowerCase(), action: 'MACRO:' + i, category: 'Macros', icon: 'layers', macro: m });
     });
     return list;
 }
@@ -74,17 +66,17 @@ function rowHtml(row, index) {
     const isPinned = state.pinned.includes(row.cmd && row.cmd.name);
     let actions = '';
     if (!row.dynamic && row.cmd) {
-        const pinGlyph = isPinned ? '★' : '☆';
-        actions += `<button class="row-act pin" data-act="pin" title="${isPinned ? 'Unpin' : 'Pin'}">${pinGlyph}</button>`;
+        const pinTitle = isPinned ? 'Unpin' : 'Pin to top';
+        actions += `<button class="icon-btn row-act" data-act="pin" title="${pinTitle}" aria-label="${pinTitle}">${icon(isPinned ? 'keep_fill' : 'keep')}</button>`;
         if (row.cmd.custom) {
-            actions += `<button class="row-act edit" data-act="edit" title="Edit">✎</button>`;
-            actions += `<button class="row-act del" data-act="del" title="Delete">🗑</button>`;
+            actions += `<button class="icon-btn row-act" data-act="edit" title="Edit" aria-label="Edit">${icon('edit')}</button>`;
+            actions += `<button class="icon-btn row-act" data-act="del" title="Delete" aria-label="Delete">${icon('delete')}</button>`;
         }
     }
     const badge = row.badge ? `<span class="badge">${escapeHtml(row.badge)}</span>` : '';
     const sub = row.sublabel ? `<span class="row-sub">${escapeHtml(row.sublabel)}</span>` : '';
     return `<div class="row${selected}" role="option" data-index="${index}">
-        <span class="row-icon" aria-hidden="true">${escapeHtml(row.icon || '•')}</span>
+        ${icon(row.icon)}
         <span class="row-body">
             <span class="row-label">${escapeHtml(row.label)}</span>
             ${sub}
@@ -167,7 +159,7 @@ function update() {
         const c = compute(q);
         if (c) {
             rows.push({
-                icon: '🧮', label: '= ' + c.display, sublabel: 'Copy result to clipboard',
+                icon: 'calculate', label: '= ' + c.display, sublabel: 'Copy result to clipboard',
                 badge: 'Result', dynamic: true,
                 onRun: () => { copyText(String(c.value)); toast('Copied ' + c.display); closeSoon(); }
             });
@@ -217,7 +209,7 @@ function update() {
     // Fallback: search the web
     if (!rows.length) {
         rows.push({
-            icon: '🔍', label: `Search Google for “${q}”`, badge: 'Web', dynamic: true,
+            icon: 'search', label: `Search Google for “${q}”`, badge: 'Web', dynamic: true,
             onRun: () => openSearch('SEARCH:https://www.google.com/search?q={searchTerm}', q)
         });
     }
@@ -252,7 +244,7 @@ function renderTabs(filter, token) {
             .sort((a, b) => b.s - a.s)
             .slice(0, 30)
             .map(({ t }) => ({
-                icon: t.favIconUrl ? '🔖' : '🗂️', label: t.title || t.url, sublabel: t.url,
+                icon: 'tab', label: t.title || t.url, sublabel: t.url,
                 badge: t.active ? 'current' : null, dynamic: true,
                 onRun: () => {
                     chrome.tabs.update(t.id, { active: true });
@@ -268,7 +260,7 @@ function renderTabs(filter, token) {
 function renderGoto(filter, token) {
     if (!filter) {
         selectedIndex = -1;
-        paint([{ icon: '🧭', label: 'Type to search bookmarks & history…', dynamic: true, onRun: () => {} }], false);
+        paint([{ icon: 'explore', label: 'Type to search bookmarks & history…', dynamic: true, onRun: () => {} }], false);
         return;
     }
     Promise.all([
@@ -280,12 +272,12 @@ function renderGoto(filter, token) {
         const rows = [];
         bm.filter(b => b.url).forEach(b => {
             if (seen.has(b.url)) return; seen.add(b.url);
-            rows.push({ icon: '⭐', label: b.title || b.url, sublabel: b.url, badge: 'bookmark', dynamic: true,
+            rows.push({ icon: 'star', label: b.title || b.url, sublabel: b.url, badge: 'bookmark', dynamic: true,
                 onRun: () => { chrome.tabs.create({ url: b.url }); window.close(); } });
         });
         hist.forEach(h => {
             if (seen.has(h.url)) return; seen.add(h.url);
-            rows.push({ icon: '🕘', label: h.title || h.url, sublabel: h.url, badge: 'history', dynamic: true,
+            rows.push({ icon: 'history', label: h.title || h.url, sublabel: h.url, badge: 'history', dynamic: true,
                 onRun: () => { chrome.tabs.create({ url: h.url }); window.close(); } });
         });
         selectedIndex = rows.length ? 0 : -1;
@@ -329,7 +321,7 @@ function runCommand(cmd) {
         chrome.tabs.create({ url: action });
         window.close();
     } else if (action.startsWith('SEARCH:')) {
-        promptFor(`${cmd.name} — enter search term`).then(term => {
+        promptFor(cmd.name).then(term => {
             if (term) openSearch(action, term);
         });
     } else if (action.startsWith('SNIPPET:')) {
@@ -373,7 +365,7 @@ function resolvePrompt(val) {
 /* ---------------- Editors ---------------- */
 function openEditor(existing) {
     editingOriginalName = existing ? existing.name : null;
-    el.editTitle.textContent = existing ? 'Edit Command' : 'New Command';
+    el.editTitle.textContent = existing ? 'Edit command' : 'New command';
     el.editName.value = existing ? existing.name : '';
     el.editUrl.value = existing ? existing.action : '';
     show(el.editPanel);
@@ -564,9 +556,12 @@ el.searchName.addEventListener('keydown', (e) => { if (e.key === 'Enter') el.sea
 el.searchUrl.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveSearchCommand(); });
 
 /* ---------------- Boot ---------------- */
+el.settingsBtn.innerHTML = icon('settings');
+[el.promptBack, el.editBack, el.searchBack].forEach(b => { b.innerHTML = icon('arrow_back'); });
+
 loadState((s) => {
     state = s;
-    applyTheme();
+    applyTheme(state.settings.theme);
     el.input.focus();
     update();
 });

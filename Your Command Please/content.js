@@ -8,8 +8,9 @@ function ycpToast(msg) {
     const t = document.createElement('div');
     t.textContent = msg;
     t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);' +
-        'background:rgba(30,30,34,.92);color:#fff;padding:10px 18px;border-radius:12px;' +
-        'font:14px -apple-system,sans-serif;z-index:2147483647;box-shadow:0 8px 24px rgba(0,0,0,.4)';
+        'background:#303031;color:#F2F0F1;padding:14px 16px;border-radius:3px;' +
+        'font:14px/20px system-ui,sans-serif;letter-spacing:.25px;z-index:2147483647;' +
+        'box-shadow:0 1px 3px rgba(0,0,0,.3),0 4px 8px 3px rgba(0,0,0,.15)';
     document.body.appendChild(t);
     setTimeout(() => t.remove(), 1800);
 }
@@ -53,7 +54,7 @@ function startAreaSelection(output) {
     const overlay = document.createElement('div');
     const box = document.createElement('div');
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.4);cursor:crosshair;z-index:2147483646';
-    box.style.cssText = 'position:fixed;border:2px dashed #0a84ff;background:rgba(10,132,255,.12);z-index:2147483647';
+    box.style.cssText = 'position:fixed;border:2px solid #BAC9D1;background:rgba(186,201,209,.16);z-index:2147483647';
     document.body.appendChild(overlay);
     document.body.appendChild(box);
 

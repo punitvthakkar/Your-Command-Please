@@ -9,74 +9,74 @@
     const SEARCH = (u) => 'SEARCH:' + u;
 
     // ---- Built-in commands ------------------------------------
-    // Each: { name, action, category, icon }
+    // Each: { name, action, category, icon } — icon is a Material Symbol name from icons.js
     const BUILTIN = [
         // Create
-        { name: 'new tab',                        action: 'NEW_TAB',                                   category: 'Create',   icon: '➕' },
-        { name: 'new window',                     action: 'NEW_WINDOW',                                category: 'Create',   icon: '🪟' },
-        { name: 'new google doc',                 action: 'https://docs.new',                          category: 'Create',   icon: '📄' },
-        { name: 'new doc',                        action: 'https://docs.new',                          category: 'Create',   icon: '📄' },
-        { name: 'new google sheet',               action: 'https://sheets.new',                        category: 'Create',   icon: '📊' },
-        { name: 'new sheet',                      action: 'https://sheets.new',                        category: 'Create',   icon: '📊' },
-        { name: 'new google slides',              action: 'https://slides.new',                        category: 'Create',   icon: '📽️' },
-        { name: 'new slides',                     action: 'https://slides.new',                        category: 'Create',   icon: '📽️' },
-        { name: 'new notion doc',                 action: 'https://www.notion.so/new',                 category: 'Create',   icon: '🗒️' },
-        { name: 'new figma project',              action: 'https://www.figma.com/new',                 category: 'Create',   icon: '🎨' },
-        { name: 'new replit project',             action: 'https://replit.com/new',                    category: 'Create',   icon: '💻' },
-        { name: 'new gmail message',              action: 'https://mail.google.com/mail/u/0/#compose', category: 'Create',   icon: '✉️' },
-        { name: 'new word file',                  action: 'https://docx.new',                          category: 'Create',   icon: '📃' },
-        { name: 'new powerpoint presentation',    action: 'https://pptx.new',                          category: 'Create',   icon: '📑' },
-        { name: 'new excel file',                 action: 'https://excel.new',                         category: 'Create',   icon: '📈' },
-        { name: 'new google calendar event',      action: 'https://cal.new',                           category: 'Create',   icon: '📅' },
+        { name: 'new tab',                        action: 'NEW_TAB',                                   category: 'Create',   icon: 'add' },
+        { name: 'new window',                     action: 'NEW_WINDOW',                                category: 'Create',   icon: 'select_window' },
+        { name: 'new google doc',                 action: 'https://docs.new',                          category: 'Create',   icon: 'description' },
+        { name: 'new doc',                        action: 'https://docs.new',                          category: 'Create',   icon: 'description' },
+        { name: 'new google sheet',               action: 'https://sheets.new',                        category: 'Create',   icon: 'table_chart' },
+        { name: 'new sheet',                      action: 'https://sheets.new',                        category: 'Create',   icon: 'table_chart' },
+        { name: 'new google slides',              action: 'https://slides.new',                        category: 'Create',   icon: 'slideshow' },
+        { name: 'new slides',                     action: 'https://slides.new',                        category: 'Create',   icon: 'slideshow' },
+        { name: 'new notion doc',                 action: 'https://www.notion.so/new',                 category: 'Create',   icon: 'edit_note' },
+        { name: 'new figma project',              action: 'https://www.figma.com/new',                 category: 'Create',   icon: 'draw' },
+        { name: 'new replit project',             action: 'https://replit.com/new',                    category: 'Create',   icon: 'code' },
+        { name: 'new gmail message',              action: 'https://mail.google.com/mail/u/0/#compose', category: 'Create',   icon: 'mail' },
+        { name: 'new word file',                  action: 'https://docx.new',                          category: 'Create',   icon: 'article' },
+        { name: 'new powerpoint presentation',    action: 'https://pptx.new',                          category: 'Create',   icon: 'present_to_all' },
+        { name: 'new excel file',                 action: 'https://excel.new',                         category: 'Create',   icon: 'grid_on' },
+        { name: 'new google calendar event',      action: 'https://cal.new',                           category: 'Create',   icon: 'event' },
 
         // Navigate (chrome pages)
-        { name: 'history',                        action: 'chrome://history',                          category: 'Navigate', icon: '🕘' },
-        { name: 'downloads',                      action: 'chrome://downloads',                        category: 'Navigate', icon: '⬇️' },
-        { name: 'chrome settings',                action: 'chrome://settings',                         category: 'Navigate', icon: '⚙️' },
-        { name: 'passwords',                      action: 'chrome://password-manager/passwords',       category: 'Navigate', icon: '🔑' },
-        { name: 'extension manager',              action: 'chrome://extensions',                       category: 'Navigate', icon: '🧩' },
-        { name: 'bookmark manager',               action: 'chrome://bookmarks',                        category: 'Navigate', icon: '📚' },
-        { name: 'goto',                           action: 'GOTO',                                      category: 'Navigate', icon: '🧭' },
+        { name: 'history',                        action: 'chrome://history',                          category: 'Navigate', icon: 'history' },
+        { name: 'downloads',                      action: 'chrome://downloads',                        category: 'Navigate', icon: 'download' },
+        { name: 'chrome settings',                action: 'chrome://settings',                         category: 'Navigate', icon: 'settings' },
+        { name: 'passwords',                      action: 'chrome://password-manager/passwords',       category: 'Navigate', icon: 'key' },
+        { name: 'extension manager',              action: 'chrome://extensions',                       category: 'Navigate', icon: 'extension' },
+        { name: 'bookmark manager',               action: 'chrome://bookmarks',                        category: 'Navigate', icon: 'bookmarks' },
+        { name: 'goto',                           action: 'GOTO',                                      category: 'Navigate', icon: 'explore' },
 
         // Tabs
-        { name: 'switch to tab',                  action: 'SWITCH_TAB',                                category: 'Tabs',     icon: '🗂️' },
-        { name: 'pin tab',                        action: 'PIN_TAB',                                   category: 'Tabs',     icon: '📌' },
-        { name: 'unpin tab',                      action: 'UNPIN_TAB',                                 category: 'Tabs',     icon: '📌' },
-        { name: 'mute tab',                       action: 'MUTE_TAB',                                  category: 'Tabs',     icon: '🔇' },
-        { name: 'unmute tab',                     action: 'UNMUTE_TAB',                                category: 'Tabs',     icon: '🔊' },
-        { name: 'duplicate tab',                  action: 'DUPLICATE_TAB',                             category: 'Tabs',     icon: '⧉' },
-        { name: 'save all tabs',                  action: 'SAVE_ALL_TABS',                             category: 'Tabs',     icon: '💾' },
+        { name: 'switch to tab',                  action: 'SWITCH_TAB',                                category: 'Tabs',     icon: 'tab' },
+        { name: 'pin tab',                        action: 'PIN_TAB',                                   category: 'Tabs',     icon: 'keep' },
+        { name: 'unpin tab',                      action: 'UNPIN_TAB',                                 category: 'Tabs',     icon: 'keep_off' },
+        { name: 'mute tab',                       action: 'MUTE_TAB',                                  category: 'Tabs',     icon: 'volume_off' },
+        { name: 'unmute tab',                     action: 'UNMUTE_TAB',                                category: 'Tabs',     icon: 'volume_up' },
+        { name: 'duplicate tab',                  action: 'DUPLICATE_TAB',                             category: 'Tabs',     icon: 'library_add' },
+        { name: 'save all tabs',                  action: 'SAVE_ALL_TABS',                             category: 'Tabs',     icon: 'save' },
 
         // Browser
-        { name: 'clear cache',                    action: 'CLEAR_CACHE',                               category: 'Browser',  icon: '🧹' },
-        { name: 'clear cookies',                  action: 'CLEAR_COOKIES',                             category: 'Browser',  icon: '🍪' },
-        { name: 'save bookmark',                  action: 'BOOKMARK',                                  category: 'Browser',  icon: '⭐' },
+        { name: 'clear cache',                    action: 'CLEAR_CACHE',                               category: 'Browser',  icon: 'cleaning_services' },
+        { name: 'clear cookies',                  action: 'CLEAR_COOKIES',                             category: 'Browser',  icon: 'cookie' },
+        { name: 'save bookmark',                  action: 'BOOKMARK',                                  category: 'Browser',  icon: 'bookmark_add' },
 
         // Page
-        { name: 'screenshot',                     action: 'SCREENSHOT',                                category: 'Page',     icon: '✂️' },
-        { name: 'copy screenshot',                action: 'COPY_SCREENSHOT',                           category: 'Page',     icon: '📋' },
-        { name: 'full page screenshot',           action: 'FULL_SCREENSHOT',                           category: 'Page',     icon: '🖼️' },
-        { name: 'reader mode',                    action: 'READER_MODE',                               category: 'Page',     icon: '📖' },
-        { name: 'dark mode',                      action: 'DARK_MODE',                                 category: 'Page',     icon: '🌙' },
-        { name: 'link extract',                   action: 'LINK_EXTRACT',                              category: 'Page',     icon: '🔗' },
-        { name: 'copy url',                       action: 'COPY_URL',                                  category: 'Page',     icon: '📎' },
-        { name: 'copy page title',                action: 'COPY_TITLE',                                category: 'Page',     icon: '🏷️' },
+        { name: 'screenshot',                     action: 'SCREENSHOT',                                category: 'Page',     icon: 'screenshot_region' },
+        { name: 'copy screenshot',                action: 'COPY_SCREENSHOT',                           category: 'Page',     icon: 'content_paste' },
+        { name: 'full page screenshot',           action: 'FULL_SCREENSHOT',                           category: 'Page',     icon: 'screenshot_monitor' },
+        { name: 'reader mode',                    action: 'READER_MODE',                               category: 'Page',     icon: 'menu_book' },
+        { name: 'dark mode',                      action: 'DARK_MODE',                                 category: 'Page',     icon: 'dark_mode' },
+        { name: 'link extract',                   action: 'LINK_EXTRACT',                              category: 'Page',     icon: 'link' },
+        { name: 'copy url',                       action: 'COPY_URL',                                  category: 'Page',     icon: 'content_copy' },
+        { name: 'copy page title',                action: 'COPY_TITLE',                                category: 'Page',     icon: 'title' },
 
         // Search
-        { name: 'search google',                  action: SEARCH('https://www.google.com/search?q={searchTerm}'),                   category: 'Search', icon: '🔍' },
-        { name: 'search amazon',                  action: SEARCH('https://www.amazon.com/s?k={searchTerm}'),                        category: 'Search', icon: '🛒' },
-        { name: 'search youtube',                 action: SEARCH('https://www.youtube.com/results?search_query={searchTerm}'),      category: 'Search', icon: '▶️' },
-        { name: 'search flipkart',                action: SEARCH('https://www.flipkart.com/search?q={searchTerm}'),                 category: 'Search', icon: '🛍️' },
-        { name: 'search spotify',                 action: SEARCH('https://open.spotify.com/search/{searchTerm}'),                   category: 'Search', icon: '🎵' },
-        { name: 'search twitter',                 action: SEARCH('https://x.com/search?q={searchTerm}&src=typed_query'),            category: 'Search', icon: '🐦' },
-        { name: 'search reddit',                  action: SEARCH('https://www.reddit.com/search?q={searchTerm}'),                   category: 'Search', icon: '👽' },
-        { name: 'search bing',                    action: SEARCH('https://www.bing.com/search?q={searchTerm}'),                     category: 'Search', icon: '🔎' },
-        { name: 'search gmail',                   action: SEARCH('https://mail.google.com/mail/u/0/#search/{searchTerm}'),          category: 'Search', icon: '📧' },
+        { name: 'search google',                  action: SEARCH('https://www.google.com/search?q={searchTerm}'),                   category: 'Search', icon: 'search' },
+        { name: 'search amazon',                  action: SEARCH('https://www.amazon.com/s?k={searchTerm}'),                        category: 'Search', icon: 'shopping_cart' },
+        { name: 'search youtube',                 action: SEARCH('https://www.youtube.com/results?search_query={searchTerm}'),      category: 'Search', icon: 'smart_display' },
+        { name: 'search flipkart',                action: SEARCH('https://www.flipkart.com/search?q={searchTerm}'),                 category: 'Search', icon: 'shopping_bag' },
+        { name: 'search spotify',                 action: SEARCH('https://open.spotify.com/search/{searchTerm}'),                   category: 'Search', icon: 'music_note' },
+        { name: 'search twitter',                 action: SEARCH('https://x.com/search?q={searchTerm}&src=typed_query'),            category: 'Search', icon: 'tag' },
+        { name: 'search reddit',                  action: SEARCH('https://www.reddit.com/search?q={searchTerm}'),                   category: 'Search', icon: 'forum' },
+        { name: 'search bing',                    action: SEARCH('https://www.bing.com/search?q={searchTerm}'),                     category: 'Search', icon: 'search' },
+        { name: 'search gmail',                   action: SEARCH('https://mail.google.com/mail/u/0/#search/{searchTerm}'),          category: 'Search', icon: 'mail' },
 
         // System
-        { name: 'new command',                    action: 'NEW_COMMAND',                               category: 'System',   icon: '✨' },
-        { name: 'new search command',             action: 'NEW_SEARCH',                                category: 'System',   icon: '🔧' },
-        { name: 'extension settings',             action: 'OPEN_SETTINGS',                             category: 'System',   icon: '🎛️' }
+        { name: 'new command',                    action: 'NEW_COMMAND',                               category: 'System',   icon: 'add_circle' },
+        { name: 'new search command',             action: 'NEW_SEARCH',                                category: 'System',   icon: 'saved_search' },
+        { name: 'extension settings',             action: 'OPEN_SETTINGS',                             category: 'System',   icon: 'tune' }
     ];
 
     const CATEGORY_ORDER = ['Pinned', 'Result', 'Tabs', 'Navigate', 'Create', 'Search', 'Page', 'Browser', 'Snippets', 'Macros', 'System', 'Custom'];
@@ -268,9 +268,19 @@
         });
     }
 
+    // Theme override is mirrored to localStorage (synchronous) so it applies
+    // before first paint; chrome.storage stays the source of truth.
+    function applyTheme(theme) {
+        const root = document.documentElement;
+        if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
+        else delete root.dataset.theme;
+        try { localStorage.ycpTheme = theme; } catch (e) {}
+    }
+    try { applyTheme(localStorage.ycpTheme); } catch (e) {}
+
     window.YCP = {
         BUILTIN, CATEGORY_ORDER, DEFAULT_SETTINGS,
         escapeHtml, fuzzyScore, frecency, recordUse,
-        compute, convertUnits, evalArith, loadState
+        compute, convertUnits, evalArith, loadState, applyTheme
     };
 })();

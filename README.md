@@ -53,8 +53,8 @@ Manage snippets, macros and custom commands — and **export / import** everythi
 
 ## Pinning & navigating
 
-- Click the **☆ / ★** icon next to any command to pin it to the top (limit is configurable in Settings).
-- Click **✎** to edit or **🗑** to delete a custom command.
+- Hover or select a command and click the **pin** icon to pin it to the top (limit is configurable in Settings).
+- Use the **edit** and **delete** icons to change or remove a custom command.
 - **↑ / ↓** to move through results, **Tab** to autocomplete, **Enter** to run, **Esc** to close.
 
 ---

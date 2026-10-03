@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- Material Next: speculative design forecast (frozen 2026-09-24). Not an official Google design. -->
+<html lang="en" data-expressiveness="calm">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Command Please</title>
+    <link rel="stylesheet" href="theme.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="shared.js"></script>
+    <script src="icons.js"></script>
 </head>
 <body>
-    <div class="glass flush" id="main-container">
+    <div id="main-container">
         <div class="search-bar">
-            <span class="search-glyph" aria-hidden="true">⌘</span>
+            <svg class="ic" viewBox="0 -960 960 960" aria-hidden="true"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>
             <div class="input-wrapper">
                 <div id="autofill"></div>
-                <input type="text" id="commandInput" placeholder="Type a command…" autocomplete="off" spellcheck="false">
+                <input type="text" id="commandInput" placeholder="Type a command" aria-label="Command" autocomplete="off" spellcheck="false">
             </div>
-            <button class="icon-btn" id="settingsBtn" title="Settings">⚙︎</button>
+            <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Settings"></button>
         </div>
         <div id="suggestions" role="listbox"></div>
         <div class="footer-hint">
@@ -26,50 +30,59 @@
     </div>
 
     <!-- Inline argument prompt (replaces window.prompt) -->
-    <div class="glass flush hidden" id="prompt-container">
+    <div class="hidden" id="prompt-container">
         <div class="panel-head">
-            <button class="icon-btn back" id="promptBack" title="Back">‹</button>
+            <button class="icon-btn back" id="promptBack" title="Back" aria-label="Back"></button>
             <h2 id="promptTitle">Enter value</h2>
         </div>
-        <input type="text" id="promptInput" placeholder="Type here…" autocomplete="off">
+        <label class="field"><span>Search term</span>
+            <input type="text" id="promptInput" placeholder="Type here" autocomplete="off">
+        </label>
         <div class="btn-row">
-            <button class="btn ghost" id="promptCancel">Cancel</button>
-            <button class="btn primary" id="promptOk">Continue</button>
+            <button class="btn text" id="promptCancel">Cancel</button>
+            <button class="btn filled" id="promptOk">Search</button>
         </div>
     </div>
 
     <!-- Add / edit command -->
-    <div class="glass flush hidden" id="edit-command-container">
+    <div class="hidden" id="edit-command-container">
         <div class="panel-head">
-            <button class="icon-btn back" id="editBack" title="Back">‹</button>
-            <h2 id="editTitle">New Command</h2>
+            <button class="icon-btn back" id="editBack" title="Back" aria-label="Back"></button>
+            <h2 id="editTitle">New command</h2>
         </div>
-        <input type="text" id="editName" placeholder="Command name (e.g. new linear issue)" autocomplete="off">
-        <input type="text" id="editUrl" placeholder="URL or chrome:// address" autocomplete="off">
+        <label class="field"><span>Command name</span>
+            <input type="text" id="editName" placeholder="e.g. new linear issue" autocomplete="off">
+        </label>
+        <label class="field"><span>URL</span>
+            <input type="text" id="editUrl" placeholder="https://… or chrome://…" autocomplete="off">
+        </label>
         <div class="btn-row">
-            <button class="btn ghost" id="editCancel">Cancel</button>
-            <button class="btn primary" id="editSave">Save</button>
+            <button class="btn text" id="editCancel">Cancel</button>
+            <button class="btn filled" id="editSave">Save</button>
         </div>
     </div>
 
     <!-- Add search command -->
-    <div class="glass flush hidden" id="search-command-container">
+    <div class="hidden" id="search-command-container">
         <div class="panel-head">
-            <button class="icon-btn back" id="searchBack" title="Back">‹</button>
-            <h2>New Search Command</h2>
+            <button class="icon-btn back" id="searchBack" title="Back" aria-label="Back"></button>
+            <h2>New search command</h2>
         </div>
-        <p class="guidance">Search for <b>abc xyz pqr</b> on the target site, copy the resulting URL from the address bar, and paste it below. We'll turn it into a reusable search.</p>
-        <input type="text" id="searchName" placeholder="Command name (e.g. search github)" autocomplete="off">
-        <input type="text" id="searchUrl" placeholder="Paste the search URL here…" autocomplete="off">
+        <p class="guidance">On the target site, search for <b>abc xyz pqr</b>, then paste the address-bar URL below. It becomes a reusable search.</p>
+        <label class="field"><span>Command name</span>
+            <input type="text" id="searchName" placeholder="e.g. search github" autocomplete="off">
+        </label>
+        <label class="field"><span>Search URL</span>
+            <input type="text" id="searchUrl" placeholder="Paste the URL here" autocomplete="off">
+        </label>
         <div class="btn-row">
-            <button class="btn ghost" id="searchCancel">Cancel</button>
-            <button class="btn primary" id="searchSave">Save</button>
+            <button class="btn text" id="searchCancel">Cancel</button>
+            <button class="btn filled" id="searchSave">Save</button>
         </div>
     </div>
 
-    <div id="toast" class="toast hidden"></div>
+    <div id="toast" class="toast hidden" role="status"></div>
 
-    <script src="shared.js"></script>
     <script src="popup.js"></script>
 </body>
 </html>
