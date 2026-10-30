@@ -1,5 +1,5 @@
 /* Material Next: speculative design forecast (frozen 2026-09-24). Not an official Google design.
-   Shared components + command palette. Every value comes from theme.css tokens. */
+   Shared components + command palette. Every value comes from tokens.css / theme.css. */
 
 * { box-sizing: border-box; }
 
@@ -51,7 +51,8 @@ body {
 .btn:active { border-radius: var(--md-sys-shape-corner-medium); }
 .btn.filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
 .btn.text { padding: 0 12px; }
-.btn.outlined { border: 1px solid var(--md-sys-color-outline-variant); color: var(--md-sys-color-on-surface-variant); }
+.btn.outlined { border: 1px solid var(--md-sys-color-outline-variant); color: var(--md-sys-color-primary); }
+.btn.tonal { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
 
 .icon-btn {
     display: inline-grid; place-items: center;
@@ -93,7 +94,7 @@ body {
 .toast {
     position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 10;
     min-height: 48px; padding: 14px 16px;
-    border-radius: var(--md-sys-shape-corner-extra-small);
+    border-radius: var(--md-sys-shape-corner-small);
     background: var(--md-sys-color-inverse-surface);
     color: var(--md-sys-color-inverse-on-surface);
     font: var(--type-body-medium); letter-spacing: .25px;
@@ -104,14 +105,24 @@ body {
 
 /* ======================= Command palette ======================= */
 
-/* Search bar: 56dp, full shape, surface-container-high */
+/* Search bar: 56dp, full shape. The ring shows it's live; the leading glyph carries the brand color */
 .search-bar {
     display: flex; align-items: center; gap: 4px;
-    height: 56px; padding: 0 4px 0 16px;
+    height: 56px; padding: 0 4px 0 8px;
     border-radius: 28px;
     background: var(--md-sys-color-surface-container-high);
+    box-shadow: inset 0 0 0 2px transparent;
+    transition: box-shadow var(--mn-motion-effects-fast);
 }
-.search-bar > .ic { color: var(--md-sys-color-on-surface-variant); margin-right: 12px; }
+.search-bar:focus-within { box-shadow: inset 0 0 0 2px var(--md-sys-color-primary); }
+.search-lead {
+    display: grid; place-items: center; flex-shrink: 0;
+    width: 40px; height: 40px; margin-right: 8px;
+    border-radius: 20px;
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+}
+.search-lead .ic { width: 22px; height: 22px; }
 
 .input-wrapper { position: relative; flex: 1; display: flex; min-width: 0; }
 /* The ghost autofill shares the input's box model exactly so the
@@ -123,10 +134,10 @@ body {
 }
 #autofill {
     position: absolute; inset: 0;
-    color: var(--md-sys-color-on-surface-variant); opacity: .6;
+    color: var(--md-sys-color-primary); opacity: .45;
     pointer-events: none; overflow: hidden;
 }
-#commandInput { outline: 0; background: transparent; color: var(--md-sys-color-on-surface); }
+#commandInput { outline: 0; background: transparent; color: var(--md-sys-color-on-surface); caret-color: var(--md-sys-color-primary); }
 #commandInput::placeholder { color: var(--md-sys-color-on-surface-variant); }
 
 /* Segmented list: rows in groups, 2dp gaps, outer corners large, inner extra-small */
@@ -137,45 +148,71 @@ body {
     scrollbar-width: thin;
     scrollbar-color: var(--md-sys-color-outline-variant) transparent;
 }
+/* Category header: the category's accent color, with a matching pip */
 .cat-head {
+    display: flex; align-items: center; gap: 8px;
     padding: 12px 16px 6px;
     font: var(--type-title-small); letter-spacing: .1px;
-    color: var(--md-sys-color-primary);
+    color: var(--acc, var(--md-sys-color-primary));
+}
+.cat-head::before {
+    content: ''; width: 8px; height: 8px;
+    border-radius: var(--md-sys-shape-corner-extra-small);
+    background: currentColor;
 }
 .cat-head:first-child { padding-top: 8px; }
 
 .row {
     --r-top: var(--md-sys-shape-corner-extra-small);
     --r-bot: var(--md-sys-shape-corner-extra-small);
-    display: flex; align-items: center; gap: 16px;
-    min-height: 48px; padding: 4px 4px 4px 16px; flex-shrink: 0;
+    display: flex; align-items: center; gap: 12px;
+    min-height: 52px; padding: 6px 4px 6px 8px; flex-shrink: 0;
     border-radius: var(--r-top) var(--r-top) var(--r-bot) var(--r-bot);
     background: var(--md-sys-color-surface-container);
 }
 .row:first-child, .cat-head + .row { --r-top: var(--md-sys-shape-corner-large); }
 .row:last-child, .row:has(+ .cat-head) { --r-bot: var(--md-sys-shape-corner-large); }
-/* Selected morphs to fully rounded (E1) and takes the secondary container */
+/* Selected morphs to fully rounded and takes the primary container: the one spotlight */
 .row.selected {
-    --r-top: var(--md-sys-shape-corner-large);
-    --r-bot: var(--md-sys-shape-corner-large);
-    background: var(--md-sys-color-secondary-container);
-    color: var(--md-sys-color-on-secondary-container);
+    --r-top: var(--md-sys-shape-corner-extra-large);
+    --r-bot: var(--md-sys-shape-corner-extra-large);
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
 }
 
-.row > .ic { color: var(--md-sys-color-on-surface-variant); }
-.row.selected > .ic { color: inherit; }
-.row-body { display: flex; flex-direction: column; min-width: 0; flex: 1; padding: 6px 0; }
+/* Leading tile in the category's accent; it morphs to a circle in the primary color when selected */
+.lead {
+    display: grid; place-items: center; flex-shrink: 0;
+    width: 40px; height: 40px;
+    border-radius: var(--md-sys-shape-corner-medium);
+    background: var(--acc-c, var(--md-sys-color-secondary-container));
+    color: var(--on-acc-c, var(--md-sys-color-on-secondary-container));
+    transition: border-radius var(--mn-motion-spatial-fast),
+                background-color var(--mn-motion-effects-fast),
+                color var(--mn-motion-effects-fast);
+}
+.lead .ic { width: 22px; height: 22px; }
+.row.selected .lead {
+    border-radius: 20px;
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+}
+
+.row-body { display: flex; flex-direction: column; min-width: 0; flex: 1; }
 .row-label, .row-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .row-sub { font: var(--type-body-small); letter-spacing: .4px; color: var(--md-sys-color-on-surface-variant); }
-.row.selected .row-sub { color: inherit; }
+.row.selected .row-sub { color: inherit; opacity: .8; }
 
+/* Category chip in ranked results: tinted with the same accent as the row's tile */
 .badge {
-    flex-shrink: 0; padding-right: 12px;
+    flex-shrink: 0; margin-right: 8px; padding: 2px 10px;
+    border-radius: 12px;
+    background: var(--acc-c, var(--md-sys-color-secondary-container));
+    color: var(--on-acc-c, var(--md-sys-color-on-secondary-container));
     font: var(--type-label-medium); letter-spacing: .5px;
-    color: var(--md-sys-color-on-surface-variant);
     text-transform: capitalize;
 }
-.row.selected .badge { color: inherit; }
+.row.selected .badge { background: color-mix(in srgb, currentColor 14%, transparent); color: inherit; }
 
 .row-actions { display: flex; flex-shrink: 0; }
 .row:not(:hover, .selected) .row-actions { display: none; }
@@ -183,10 +220,12 @@ body {
 .row.selected .row-act { color: inherit; }
 
 .empty {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
     padding: 32px 16px; text-align: center;
     font: var(--type-body-medium); letter-spacing: .25px;
     color: var(--md-sys-color-on-surface-variant);
 }
+.empty .ic { width: 32px; height: 32px; color: var(--md-sys-color-primary); }
 
 .footer-hint {
     display: flex; gap: 16px; justify-content: center;
@@ -195,9 +234,10 @@ body {
     color: var(--md-sys-color-on-surface-variant);
 }
 kbd {
-    display: inline-block; min-width: 20px; padding: 0 4px; margin-right: 2px;
+    display: inline-block; min-width: 20px; padding: 0 5px; margin-right: 2px;
     border-radius: var(--md-sys-shape-corner-extra-small);
-    background: var(--md-sys-color-surface-container-high);
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
     font: inherit; text-align: center;
 }
 
@@ -205,8 +245,13 @@ kbd {
 .panel-head { display: flex; align-items: center; gap: 4px; margin: 0 0 16px -4px; }
 .panel-head h2 { margin: 0; font: var(--type-title-large); color: var(--md-sys-color-on-surface); }
 .guidance {
-    margin: 0 0 16px;
+    margin: 0 0 16px; padding: 12px 16px;
+    border-radius: var(--md-sys-shape-corner-large);
+    background: var(--ycp-accent-4-container);
+    color: var(--ycp-on-accent-4-container);
     font: var(--type-body-medium); letter-spacing: .25px;
-    color: var(--md-sys-color-on-surface-variant);
 }
-.guidance b { color: var(--md-sys-color-on-surface); font-weight: 500; }
+.guidance b { font-weight: 600; }
+
+/* Panel swaps crossfade and slide (view transitions); reduced motion is handled in tokens.css */
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 220ms; }

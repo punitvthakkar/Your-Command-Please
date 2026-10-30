@@ -15,23 +15,104 @@ function saveSync(partial) {
     });
 }
 
+/* ---------- appearance (theme engine) ---------- */
+let engine = null; // theme-engine.js, loaded once at boot
+const DIAL_HINTS = {
+    calm: 'Soft color, gentle motion, tighter corners',
+    standard: 'True-to-seed color, crisp motion',
+    expressive: 'Vivid color, bouncy motion, rounder corners'
+};
+
+function isDark() {
+    const t = document.documentElement.dataset.theme;
+    return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+}
+// Each swatch previews the scheme it would generate under the current style and mode
+function swatchStyle(seed) {
+    const c = engine.scheme(seed, state.settings.themeDial, isDark());
+    return `--a:${c.primary};--b:${c.primaryContainer};--c:${c.secondary}`;
+}
+function renderSwatches() {
+    if (!engine) return;
+    const seed = engine.normalizeSeed(state.settings.themeSeed);
+    const isMood = engine.MOODS.some(m => m.seed === seed);
+    $('#swatches').innerHTML = engine.MOODS.map(m => `
+        <label class="swatch">
+            <input type="radio" name="seed" value="${m.seed}"${m.seed === seed ? ' checked' : ''}>
+            <span class="swatch-art" style="${swatchStyle(m.seed)}"></span>
+            <span class="swatch-name">${m.label}</span>
+        </label>`).join('') + `
+        <button type="button" class="swatch custom" id="customSwatch" aria-pressed="${!isMood}">
+            <span class="swatch-art"${isMood ? '' : ` style="${swatchStyle(seed)}"`}>${isMood ? icon('add') : ''}</span>
+            <span class="swatch-name">Custom</span>
+        </button>`;
+}
+function applyAppearance() {
+    applyTheme(state.settings).then(renderSwatches);
+    $('#dialHint').textContent = DIAL_HINTS[state.settings.themeDial] || '';
+}
+
+// Live preview while the color picker is open; saved when the picker commits
+let previewFrame = 0;
+function previewSeed(hex) {
+    cancelAnimationFrame(previewFrame);
+    previewFrame = requestAnimationFrame(() => {
+        state.settings.themeSeed = hex;
+        applyAppearance();
+    });
+}
+
 /* ---------- preferences ---------- */
-function bindPrefs() {
-    const theme = $(`input[name="theme"][value="${state.settings.theme || 'auto'}"]`);
-    if (theme) theme.checked = true;
+function syncPrefs() {
+    for (const [name, value] of [['theme', state.settings.theme || 'auto'], ['dial', state.settings.themeDial]]) {
+        const r = $(`input[name="${name}"][value="${value}"]`);
+        if (r) r.checked = true;
+    }
     $('#pinLimit').value = state.settings.pinLimit || 3;
     $('#calculator').checked = state.settings.calculator !== false;
     $('#fuzzy').checked = state.settings.fuzzy !== false;
+    applyAppearance();
+}
 
-    document.querySelectorAll('input[name="theme"]').forEach(r => r.addEventListener('change', (e) => {
-        state.settings.theme = e.target.value; saveSync({}); applyTheme(e.target.value);
+function bindPrefs() {
+    $('#swatches').addEventListener('change', (e) => {
+        if (e.target.name !== 'seed') return;
+        state.settings.themeSeed = e.target.value; saveSync({}); applyAppearance();
+    });
+    $('#swatches').addEventListener('click', (e) => {
+        if (!e.target.closest('#customSwatch')) return;
+        const picker = $('#customSeed');
+        picker.value = engine ? engine.normalizeSeed(state.settings.themeSeed).toLowerCase() : '#5b4bdb';
+        try { picker.showPicker(); } catch (err) { picker.click(); }
+    });
+    $('#customSeed').addEventListener('input', (e) => previewSeed(e.target.value.toUpperCase()));
+    $('#customSeed').addEventListener('change', (e) => {
+        state.settings.themeSeed = e.target.value.toUpperCase(); saveSync({}); applyAppearance();
+    });
+    document.querySelectorAll('input[name="dial"]').forEach(r => r.addEventListener('change', (e) => {
+        state.settings.themeDial = e.target.value; saveSync({}); applyAppearance();
     }));
+    document.querySelectorAll('input[name="theme"]').forEach(r => r.addEventListener('change', (e) => {
+        state.settings.theme = e.target.value; saveSync({}); applyAppearance();
+    }));
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderSwatches);
+
     $('#pinLimit').addEventListener('change', (e) => {
         const v = Math.max(1, Math.min(20, parseInt(e.target.value) || 3));
         e.target.value = v; state.settings.pinLimit = v; saveSync({});
     });
     $('#calculator').addEventListener('change', (e) => { state.settings.calculator = e.target.checked; saveSync({}); });
     $('#fuzzy').addEventListener('change', (e) => { state.settings.fuzzy = e.target.checked; saveSync({}); });
+}
+
+// Subtitle shows the real shortcut, or where to set one
+function showShortcut() {
+    chrome.commands.getAll((cmds) => {
+        const open = cmds.find(c => c.name === '_execute_action');
+        const line = $('#shortcutLine');
+        if (open && open.shortcut) line.innerHTML = `Open the palette with <kbd>${escapeHtml(open.shortcut)}</kbd>`;
+        else line.textContent = 'Set a shortcut at chrome://extensions/shortcuts';
+    });
 }
 
 /* ---------- snippets ---------- */
@@ -135,7 +216,7 @@ function importJson(file) {
             if (d.settings) state.settings = Object.assign({}, state.settings, d.settings);
             saveSync({});
             renderAll();
-            bindPrefs();
+            syncPrefs();
             toast('Import complete');
         } catch (e) {
             toast('Invalid JSON file');
@@ -156,6 +237,7 @@ function toast(msg) {
 function renderAll() { renderSnippets(); renderMacros(); renderCommands(); }
 
 /* ---------- wiring ---------- */
+document.querySelectorAll('[data-icon]').forEach(n => { n.innerHTML = icon(n.dataset.icon); });
 $('#exportBtn').innerHTML = icon('download') + 'Export JSON';
 $('#importBtn').innerHTML = icon('upload') + 'Import JSON';
 $('#addSnippet').addEventListener('click', addSnippet);
@@ -177,7 +259,9 @@ document.addEventListener('click', (e) => {
 loadState((s) => {
     state = s;
     state.settings = Object.assign({}, DEFAULT_SETTINGS, state.settings);
-    applyTheme(state.settings.theme);
     bindPrefs();
+    syncPrefs();
     renderAll();
+    showShortcut();
+    import('./theme-engine.js').then((m) => { engine = m; renderSwatches(); });
 });

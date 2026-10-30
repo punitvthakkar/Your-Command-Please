@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<!-- Material Next: speculative design forecast (frozen 2026-09-24). Not an official Google design. -->
-<html lang="en" data-expressiveness="calm">
+<!-- Material Next: independent design language built on M3; not an official Google design. -->
+<html lang="en" data-expressiveness="expressive">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Command Please — Settings</title>
+    <link rel="stylesheet" href="tokens.css">
     <link rel="stylesheet" href="theme.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="options.css">
@@ -14,21 +15,61 @@
 <body class="options">
     <main class="page">
         <header class="page-head">
-            <h1>Your Command Please</h1>
-            <p>Settings for your command palette</p>
+            <!-- Same Cookie ⌘ mark as the toolbar icon, drawn in the theme's colors -->
+            <svg class="app-icon" viewBox="0 0 128 128" aria-hidden="true">
+                <path class="app-icon-shape" d="M64.00 0.00L65.12 0.07L66.23 0.28L67.32 0.63L68.40 1.11L69.45 1.70L70.47 2.40L71.47 3.19L72.43 4.04L73.35 4.95L74.25 5.90L75.11 6.85L75.95 7.80L76.76 8.72L77.56 9.60L78.36 10.43L79.15 11.17L79.95 11.84L80.76 12.41L81.60 12.88L82.47 13.26L83.37 13.53L84.32 13.71L85.31 13.79L86.35 13.80L87.44 13.73L88.58 13.61L89.75 13.45L90.97 13.27L92.22 13.08L93.50 12.90L94.79 12.76L96.08 12.65L97.37 12.61L98.64 12.65L99.87 12.77L101.06 13.00L102.19 13.32L103.25 13.76L104.24 14.31L105.14 14.97L105.95 15.75L106.66 16.62L107.28 17.59L107.79 18.65L108.22 19.78L108.56 20.97L108.81 22.21L108.99 23.49L109.12 24.78L109.20 26.08L109.24 27.36L109.28 28.63L109.31 29.86L109.35 31.05L109.43 32.19L109.56 33.27L109.75 34.29L110.00 35.25L110.34 36.16L110.77 37.00L111.28 37.79L111.90 38.53L112.60 39.24L113.39 39.91L114.27 40.56L115.21 41.20L116.22 41.83L117.27 42.48L118.35 43.14L119.44 43.82L120.53 44.54L121.58 45.29L122.59 46.09L123.54 46.93L124.40 47.81L125.17 48.75L125.83 49.73L126.36 50.74L126.76 51.80L127.03 52.89L127.15 54.00L127.13 55.13L126.98 56.27L126.70 57.41L126.30 58.55L125.79 59.68L125.19 60.79L124.51 61.89L123.77 62.96L123.00 64.00L122.21 65.02L121.42 66.01L120.65 66.97L119.92 67.91L119.25 68.83L118.65 69.74L118.14 70.65L117.72 71.55L117.40 72.46L117.18 73.38L117.07 74.32L117.06 75.28L117.15 76.27L117.32 77.29L117.57 78.36L117.89 79.45L118.25 80.59L118.64 81.75L119.05 82.95L119.44 84.18L119.81 85.42L120.14 86.68L120.40 87.94L120.58 89.19L120.68 90.43L120.66 91.64L120.54 92.81L120.29 93.93L119.92 95.00L119.43 96.00L118.81 96.93L118.07 97.79L117.22 98.56L116.27 99.25L115.23 99.87L114.11 100.41L112.93 100.87L111.71 101.28L110.46 101.62L109.20 101.92L107.94 102.19L106.70 102.44L105.49 102.69L104.33 102.94L103.22 103.22L102.17 103.53L101.20 103.89L100.30 104.31L99.47 104.80L98.71 105.37L98.02 106.01L97.40 106.75L96.83 107.56L96.30 108.46L95.81 109.43L95.35 110.48L94.90 111.58L94.45 112.72L93.98 113.90L93.50 115.10L92.98 116.29L92.42 117.46L91.82 118.59L91.15 119.67L90.43 120.68L89.64 121.59L88.79 122.41L87.88 123.11L86.91 123.69L85.89 124.14L84.82 124.45L83.70 124.63L82.55 124.68L81.38 124.60L80.19 124.40L78.98 124.10L77.78 123.70L76.59 123.22L75.41 122.68L74.25 122.10L73.11 121.50L72.00 120.90L70.91 120.31L69.86 119.75L68.83 119.25L67.83 118.82L66.85 118.47L65.89 118.21L64.94 118.05L64.00 118.00L63.06 118.05L62.11 118.21L61.15 118.47L60.17 118.82L59.17 119.25L58.14 119.75L57.09 120.31L56.00 120.90L54.89 121.50L53.75 122.10L52.59 122.68L51.41 123.22L50.22 123.70L49.02 124.10L47.81 124.40L46.62 124.60L45.45 124.68L44.30 124.63L43.18 124.45L42.11 124.14L41.09 123.69L40.12 123.11L39.21 122.41L38.36 121.59L37.57 120.68L36.85 119.67L36.18 118.59L35.58 117.46L35.02 116.29L34.50 115.10L34.02 113.90L33.55 112.72L33.10 111.58L32.65 110.48L32.19 109.43L31.70 108.46L31.17 107.56L30.60 106.75L29.98 106.01L29.29 105.37L28.53 104.80L27.70 104.31L26.80 103.89L25.83 103.53L24.78 103.22L23.67 102.94L22.51 102.69L21.30 102.44L20.06 102.19L18.80 101.92L17.54 101.62L16.29 101.28L15.07 100.87L13.89 100.41L12.77 99.87L11.73 99.25L10.78 98.56L9.93 97.79L9.19 96.93L8.57 96.00L8.08 95.00L7.71 93.93L7.46 92.81L7.34 91.64L7.32 90.43L7.42 89.19L7.60 87.94L7.86 86.68L8.19 85.42L8.56 84.18L8.95 82.95L9.36 81.75L9.75 80.59L10.11 79.45L10.43 78.36L10.68 77.29L10.85 76.27L10.94 75.28L10.93 74.32L10.82 73.38L10.60 72.46L10.28 71.55L9.86 70.65L9.35 69.74L8.75 68.83L8.08 67.91L7.35 66.97L6.58 66.01L5.79 65.02L5.00 64.00L4.23 62.96L3.49 61.89L2.81 60.79L2.21 59.68L1.70 58.55L1.30 57.41L1.02 56.27L0.87 55.13L0.85 54.00L0.97 52.89L1.24 51.80L1.64 50.74L2.17 49.73L2.83 48.75L3.60 47.81L4.46 46.93L5.41 46.09L6.42 45.29L7.47 44.54L8.56 43.82L9.65 43.14L10.73 42.48L11.78 41.83L12.79 41.20L13.73 40.56L14.61 39.91L15.40 39.24L16.10 38.53L16.72 37.79L17.23 37.00L17.66 36.16L18.00 35.25L18.25 34.29L18.44 33.27L18.57 32.19L18.65 31.05L18.69 29.86L18.72 28.63L18.76 27.36L18.80 26.08L18.88 24.78L19.01 23.49L19.19 22.21L19.44 20.97L19.78 19.78L20.21 18.65L20.72 17.59L21.34 16.62L22.05 15.75L22.86 14.97L23.76 14.31L24.75 13.76L25.81 13.32L26.94 13.00L28.13 12.77L29.36 12.65L30.63 12.61L31.92 12.65L33.21 12.76L34.50 12.90L35.78 13.08L37.03 13.27L38.25 13.45L39.42 13.61L40.56 13.73L41.65 13.80L42.69 13.79L43.68 13.71L44.63 13.53L45.53 13.26L46.40 12.88L47.24 12.41L48.05 11.84L48.85 11.17L49.64 10.43L50.44 9.60L51.24 8.72L52.05 7.80L52.89 6.85L53.75 5.90L54.65 4.95L55.57 4.04L56.53 3.19L57.53 2.40L58.55 1.70L59.60 1.11L60.68 0.63L61.77 0.28L62.88 0.07Z"/>
+                <path class="app-icon-glyph" d="M48 92V36A12 12 0 1 0 36 48H92A12 12 0 1 0 80 36V92A12 12 0 1 0 92 80H36A12 12 0 1 0 48 92Z" transform="translate(64 64) scale(.72) translate(-64 -64)"/>
+            </svg>
+            <div>
+                <h1>Your Command Please</h1>
+                <p id="shortcutLine">Open the palette from the toolbar</p>
+            </div>
         </header>
 
-        <section>
-            <h2>Preferences</h2>
+        <section data-acc="1">
+            <h2><span class="sec-ic" data-icon="palette"></span>Appearance</h2>
             <div class="group">
-                <div class="item">
-                    <span class="item-label" id="themeLabel">Theme</span>
+                <div class="item stack">
+                    <span class="item-label" id="colorLabel">Color</span>
+                    <div class="swatches" id="swatches" role="radiogroup" aria-labelledby="colorLabel"></div>
+                    <input type="color" id="customSeed" class="color-input" tabindex="-1" aria-hidden="true">
+                </div>
+                <div class="item wrap">
+                    <span class="item-label">Style
+                        <span class="item-sub" id="dialHint"></span>
+                    </span>
+                    <div class="segmented" role="radiogroup" aria-label="Style">
+                        <label><input type="radio" name="dial" value="calm"><span>Calm</span></label>
+                        <label><input type="radio" name="dial" value="standard"><span>Standard</span></label>
+                        <label><input type="radio" name="dial" value="expressive"><span>Expressive</span></label>
+                    </div>
+                </div>
+                <div class="item wrap">
+                    <span class="item-label" id="themeLabel">Mode</span>
                     <div class="segmented" role="radiogroup" aria-labelledby="themeLabel">
                         <label><input type="radio" name="theme" value="auto"><span>Auto</span></label>
                         <label><input type="radio" name="theme" value="light"><span>Light</span></label>
                         <label><input type="radio" name="theme" value="dark"><span>Dark</span></label>
                     </div>
                 </div>
+                <div class="item preview-item">
+                    <!-- Live preview of the palette, built from the same classes as the popup -->
+                    <div class="preview" aria-hidden="true">
+                        <div class="search-bar"><span class="search-lead" data-icon="search"></span><span class="pv-query">new doc</span></div>
+                        <div class="pv-rows">
+                            <div class="row selected" data-acc="3"><span class="lead" data-icon="description"></span><span class="row-body"><span class="row-label">new google doc</span></span><span class="badge">Create</span></div>
+                            <div class="row" data-acc="1"><span class="lead" data-icon="tab"></span><span class="row-body"><span class="row-label">switch to tab</span></span><span class="badge">Tabs</span></div>
+                            <div class="row" data-acc="4"><span class="lead" data-icon="history"></span><span class="row-body"><span class="row-label">history</span></span><span class="badge">Navigate</span></div>
+                            <div class="row" data-acc="2"><span class="lead" data-icon="search"></span><span class="row-body"><span class="row-label">search docs</span></span><span class="badge">Search</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section data-acc="6">
+            <h2><span class="sec-ic" data-icon="tune"></span>Preferences</h2>
+            <div class="group">
                 <label class="item">
                     <span class="item-label">Maximum pinned commands</span>
                     <input type="number" id="pinLimit" class="num" min="1" max="20" step="1">
@@ -44,8 +85,8 @@
             </div>
         </section>
 
-        <section>
-            <h2>Text snippets</h2>
+        <section data-acc="2">
+            <h2><span class="sec-ic" data-icon="content_paste"></span>Text snippets</h2>
             <p class="hint">Insert one into any text field with <code>insert &lt;name&gt;</code>.</p>
             <div id="snippetList" class="group"></div>
             <div class="add-form">
@@ -59,8 +100,8 @@
             </div>
         </section>
 
-        <section>
-            <h2>Macros</h2>
+        <section data-acc="3">
+            <h2><span class="sec-ic" data-icon="layers"></span>Macros</h2>
             <p class="hint">Open several tabs at once by running the macro's name.</p>
             <div id="macroList" class="group"></div>
             <div class="add-form">
@@ -74,14 +115,14 @@
             </div>
         </section>
 
-        <section>
-            <h2>Custom commands</h2>
+        <section data-acc="5">
+            <h2><span class="sec-ic" data-icon="code"></span>Custom commands</h2>
             <div id="commandList" class="group"></div>
             <p class="hint" id="noCommands" hidden>No custom commands yet. Add one from the palette with <code>new command</code>.</p>
         </section>
 
-        <section>
-            <h2>Backup</h2>
+        <section data-acc="4">
+            <h2><span class="sec-ic" data-icon="save"></span>Backup</h2>
             <p class="hint">Export your commands, snippets, macros and settings to a JSON file, or import them on another device.</p>
             <div class="btn-row start">
                 <button class="btn outlined" id="exportBtn"></button>

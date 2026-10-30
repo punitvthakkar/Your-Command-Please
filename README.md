@@ -22,7 +22,7 @@ Open it with **⌘⇧Space** (Mac) or **Ctrl+Shift+Space** (Windows/Linux), type
 - **Tab switcher** — type `tab <query>` (or run **switch to tab**) to jump to any open tab by title or URL.
 - **Go to** — type `goto <query>` to search your bookmarks and history and open a match.
 - **Inline search** — type `search youtube lofi beats` to search a site directly, no second prompt.
-- **Light / dark / auto themes**, adjustable from Settings.
+- **Theme engine** — pick a color (or any custom seed), a style (Calm / Standard / Expressive) and Light / Dark / Auto in Settings. Every color role, the category colors, corner rounding and spring motion are generated from that seed with Material color science.
 
 ---
 

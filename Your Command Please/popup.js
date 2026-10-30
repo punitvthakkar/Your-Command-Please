@@ -1,5 +1,5 @@
 const $ = document.querySelector.bind(document);
-const { BUILTIN, CATEGORY_ORDER, escapeHtml, fuzzyScore, frecency, recordUse, compute, loadState, applyTheme } = window.YCP;
+const { BUILTIN, CATEGORY_ORDER, CATEGORY_ACCENT, escapeHtml, fuzzyScore, frecency, recordUse, compute, loadState, applyTheme } = window.YCP;
 
 const el = {
     input: $('#commandInput'),
@@ -75,8 +75,10 @@ function rowHtml(row, index) {
     }
     const badge = row.badge ? `<span class="badge">${escapeHtml(row.badge)}</span>` : '';
     const sub = row.sublabel ? `<span class="row-sub">${escapeHtml(row.sublabel)}</span>` : '';
-    return `<div class="row${selected}" role="option" data-index="${index}">
-        ${icon(row.icon)}
+    // Pinned rows keep their home category's color so they stay recognisable
+    const acc = row.acc || CATEGORY_ACCENT[(row.cmd && row.cmd.category) || row.category] || 1;
+    return `<div class="row${selected}" role="option" data-index="${index}" data-acc="${acc}">
+        <span class="lead">${icon(row.icon)}</span>
         <span class="row-body">
             <span class="row-label">${escapeHtml(row.label)}</span>
             ${sub}
@@ -106,7 +108,7 @@ function paint(rows, grouped) {
     if (selectedIndex >= rows.length) selectedIndex = rows.length ? 0 : -1;
 
     if (!rows.length) {
-        el.suggestions.innerHTML = `<div class="empty">No matches</div>`;
+        el.suggestions.innerHTML = `<div class="empty">${icon('search')}No matches</div>`;
         return;
     }
 
@@ -114,7 +116,7 @@ function paint(rows, grouped) {
         let html = '', lastCat = null;
         rows.forEach((r, i) => {
             if (r.category !== lastCat) {
-                html += `<div class="cat-head">${escapeHtml(r.category)}</div>`;
+                html += `<div class="cat-head" data-acc="${CATEGORY_ACCENT[r.category] || 1}">${escapeHtml(r.category)}</div>`;
                 lastCat = r.category;
             }
             html += rowHtml(r, i);
@@ -160,7 +162,7 @@ function update() {
         if (c) {
             rows.push({
                 icon: 'calculate', label: '= ' + c.display, sublabel: 'Copy result to clipboard',
-                badge: 'Result', dynamic: true,
+                badge: 'Result', acc: CATEGORY_ACCENT.Result, dynamic: true,
                 onRun: () => { copyText(String(c.value)); toast('Copied ' + c.display); closeSoon(); }
             });
         }
@@ -173,7 +175,7 @@ function update() {
     if (inline) {
         rows.push({
             icon: inline.cmd.icon, label: `${inline.cmd.name} → “${inline.query}”`,
-            sublabel: 'Search with your query', badge: 'Search', dynamic: true,
+            sublabel: 'Search with your query', badge: 'Search', acc: CATEGORY_ACCENT.Search, dynamic: true,
             onRun: () => { openSearch(inline.cmd.action, inline.query); }
         });
     }
@@ -209,7 +211,7 @@ function update() {
     // Fallback: search the web
     if (!rows.length) {
         rows.push({
-            icon: 'search', label: `Search Google for “${q}”`, badge: 'Web', dynamic: true,
+            icon: 'search', label: `Search Google for “${q}”`, badge: 'Web', acc: CATEGORY_ACCENT.Search, dynamic: true,
             onRun: () => openSearch('SEARCH:https://www.google.com/search?q={searchTerm}', q)
         });
     }
@@ -245,7 +247,7 @@ function renderTabs(filter, token) {
             .slice(0, 30)
             .map(({ t }) => ({
                 icon: 'tab', label: t.title || t.url, sublabel: t.url,
-                badge: t.active ? 'current' : null, dynamic: true,
+                badge: t.active ? 'current' : null, acc: CATEGORY_ACCENT.Tabs, dynamic: true,
                 onRun: () => {
                     chrome.tabs.update(t.id, { active: true });
                     chrome.windows.update(t.windowId, { focused: true });
@@ -260,7 +262,7 @@ function renderTabs(filter, token) {
 function renderGoto(filter, token) {
     if (!filter) {
         selectedIndex = -1;
-        paint([{ icon: 'explore', label: 'Type to search bookmarks & history…', dynamic: true, onRun: () => {} }], false);
+        paint([{ icon: 'explore', label: 'Type to search bookmarks & history…', acc: CATEGORY_ACCENT.Navigate, dynamic: true, onRun: () => {} }], false);
         return;
     }
     Promise.all([
@@ -272,12 +274,12 @@ function renderGoto(filter, token) {
         const rows = [];
         bm.filter(b => b.url).forEach(b => {
             if (seen.has(b.url)) return; seen.add(b.url);
-            rows.push({ icon: 'star', label: b.title || b.url, sublabel: b.url, badge: 'bookmark', dynamic: true,
+            rows.push({ icon: 'star', label: b.title || b.url, sublabel: b.url, badge: 'bookmark', acc: CATEGORY_ACCENT.Browser, dynamic: true,
                 onRun: () => { chrome.tabs.create({ url: b.url }); window.close(); } });
         });
         hist.forEach(h => {
             if (seen.has(h.url)) return; seen.add(h.url);
-            rows.push({ icon: 'history', label: h.title || h.url, sublabel: h.url, badge: 'history', dynamic: true,
+            rows.push({ icon: 'history', label: h.title || h.url, sublabel: h.url, badge: 'history', acc: CATEGORY_ACCENT.Navigate, dynamic: true,
                 onRun: () => { chrome.tabs.create({ url: h.url }); window.close(); } });
         });
         selectedIndex = rows.length ? 0 : -1;
@@ -351,13 +353,11 @@ function promptFor(title) {
         promptResolver = resolve;
         el.promptTitle.textContent = title;
         el.promptInput.value = '';
-        show(el.promptPanel);
-        el.promptInput.focus();
+        show(el.promptPanel, el.promptInput);
     });
 }
 function resolvePrompt(val) {
-    show(el.main);
-    el.input.focus();
+    show(el.main, el.input);
     const r = promptResolver; promptResolver = null;
     if (r) r(val);
 }
@@ -368,8 +368,7 @@ function openEditor(existing) {
     el.editTitle.textContent = existing ? 'Edit command' : 'New command';
     el.editName.value = existing ? existing.name : '';
     el.editUrl.value = existing ? existing.action : '';
-    show(el.editPanel);
-    el.editName.focus();
+    show(el.editPanel, el.editName);
 }
 function saveEditor() {
     const name = el.editName.value.trim().toLowerCase();
@@ -384,8 +383,7 @@ function saveEditor() {
 function openSearchCommand() {
     el.searchName.value = '';
     el.searchUrl.value = '';
-    show(el.searchPanel);
-    el.searchName.focus();
+    show(el.searchPanel, el.searchName);
 }
 function saveSearchCommand() {
     const name = el.searchName.value.trim().toLowerCase();
@@ -438,14 +436,19 @@ function pushHistory(name) {
 }
 
 /* ---------------- View helpers ---------------- */
-function show(panel) {
-    [el.main, el.promptPanel, el.editPanel, el.searchPanel].forEach(p => p.classList.add('hidden'));
-    panel.classList.remove('hidden');
+// Panel swaps run inside a view transition, so focus moves once the new panel is shown.
+function show(panel, focusEl) {
+    const swap = () => {
+        [el.main, el.promptPanel, el.editPanel, el.searchPanel].forEach(p => p.classList.add('hidden'));
+        panel.classList.remove('hidden');
+        if (focusEl) focusEl.focus();
+    };
+    if (document.startViewTransition && panel.classList.contains('hidden')) document.startViewTransition(swap);
+    else swap();
 }
 function backToMain() {
-    show(el.main);
     el.input.value = '';
-    el.input.focus();
+    show(el.main, el.input);
     update();
 }
 function copyText(t) { navigator.clipboard.writeText(t).catch(() => {}); }
@@ -557,11 +560,12 @@ el.searchUrl.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveSea
 
 /* ---------------- Boot ---------------- */
 el.settingsBtn.innerHTML = icon('settings');
+$('#searchLead').innerHTML = icon('search');
 [el.promptBack, el.editBack, el.searchBack].forEach(b => { b.innerHTML = icon('arrow_back'); });
 
 loadState((s) => {
     state = s;
-    applyTheme(state.settings.theme);
+    applyTheme(state.settings);
     el.input.focus();
     update();
 });

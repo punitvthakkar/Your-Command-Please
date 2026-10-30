@@ -1,0 +1,58 @@
+/* Material Next: independent design language built on M3; not an official Google design.
+   Static tokens. Color, springs and --mn-corner-scale come from theme.css, which
+   theme-engine.js regenerates at runtime from the user's seed and dial. */
+
+:root {
+    color-scheme: light dark;
+
+    /* ---- Shape: M3 scale × dial (calm .75, standard 1, expressive 1.25) ---- */
+    --md-sys-shape-corner-extra-small: calc(4px * var(--mn-corner-scale, 1));
+    --md-sys-shape-corner-small: calc(8px * var(--mn-corner-scale, 1));
+    --md-sys-shape-corner-medium: calc(12px * var(--mn-corner-scale, 1));
+    --md-sys-shape-corner-large: calc(16px * var(--mn-corner-scale, 1));
+    --md-sys-shape-corner-extra-large: calc(28px * var(--mn-corner-scale, 1));
+
+    /* ---- State layers ---- */
+    --md-sys-state-hover: 0.08;
+    --md-sys-state-pressed: 0.10;
+
+    /* ---- Depth ---- */
+    --mn-depth-1-shadow: 0 1px 2px rgb(0 0 0 / .3), 0 1px 3px 1px rgb(0 0 0 / .15);
+    --mn-depth-3-shadow: 0 1px 3px rgb(0 0 0 / .30), 0 4px 8px 3px rgb(0 0 0 / .15);
+
+    /* ---- Motion: spring tokens from theme.css ---- */
+    --mn-motion-spatial-fast: var(--mn-spatial-fast);
+    --mn-motion-spatial-default: var(--mn-spatial-default);
+    --mn-motion-effects-fast: var(--mn-effects-fast);
+    --mn-motion-effects-default: var(--mn-effects-default);
+
+    /* ---- Type: system faces load instantly; Flex faces are used if installed ---- */
+    --md-ref-typeface-brand: 'Google Sans Flex', 'Google Sans', 'Roboto Flex', Roboto, system-ui, sans-serif;
+    --md-ref-typeface-plain: 'Roboto Flex', Roboto, system-ui, sans-serif;
+
+    /* M3 type scale as font shorthands (pair with the tracking noted) — only the styles used */
+    --type-headline-medium: 400 28px/36px var(--md-ref-typeface-brand);   /* 0 */
+    --type-title-large: 400 22px/28px var(--md-ref-typeface-brand);       /* 0 */
+    --type-title-medium: 500 16px/24px var(--md-ref-typeface-brand);      /* .15px */
+    --type-title-small: 500 14px/20px var(--md-ref-typeface-brand);       /* .1px */
+    --type-body-large: 400 16px/24px var(--md-ref-typeface-plain);        /* .5px */
+    --type-body-medium: 400 14px/20px var(--md-ref-typeface-plain);       /* .25px */
+    --type-body-small: 400 12px/16px var(--md-ref-typeface-plain);        /* .4px */
+    --type-label-large: 500 14px/20px var(--md-ref-typeface-plain);       /* .1px */
+    --type-label-medium: 500 12px/16px var(--md-ref-typeface-plain);      /* .5px */
+}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+/* Category color families: rows, headers and chips read --acc / --acc-c / --on-acc-c */
+[data-acc="1"] { --acc: var(--ycp-accent-1); --acc-c: var(--ycp-accent-1-container); --on-acc-c: var(--ycp-on-accent-1-container); }
+[data-acc="2"] { --acc: var(--ycp-accent-2); --acc-c: var(--ycp-accent-2-container); --on-acc-c: var(--ycp-on-accent-2-container); }
+[data-acc="3"] { --acc: var(--ycp-accent-3); --acc-c: var(--ycp-accent-3-container); --on-acc-c: var(--ycp-on-accent-3-container); }
+[data-acc="4"] { --acc: var(--ycp-accent-4); --acc-c: var(--ycp-accent-4-container); --on-acc-c: var(--ycp-on-accent-4-container); }
+[data-acc="5"] { --acc: var(--ycp-accent-5); --acc-c: var(--ycp-accent-5-container); --on-acc-c: var(--ycp-on-accent-5-container); }
+[data-acc="6"] { --acc: var(--ycp-accent-6); --acc-c: var(--ycp-accent-6-container); --on-acc-c: var(--ycp-on-accent-6-container); }
+
+@media (prefers-reduced-motion: reduce) {
+    :root { --mn-motion-spatial-fast: 0ms linear; --mn-motion-spatial-default: 0ms linear; }
+    ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}

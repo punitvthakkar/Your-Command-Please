@@ -80,9 +80,17 @@
     ];
 
     const CATEGORY_ORDER = ['Pinned', 'Result', 'Tabs', 'Navigate', 'Create', 'Search', 'Page', 'Browser', 'Snippets', 'Macros', 'System', 'Custom'];
+    // Each category wears one of the theme's six accent families (see tokens.css):
+    // 1 blue, 2 coral, 3 green, 4 teal, 5 pink, 6 sky.
+    const CATEGORY_ACCENT = {
+        Pinned: 1, Tabs: 1, Create: 3, Search: 2, Navigate: 4, Page: 6,
+        Browser: 5, Snippets: 2, Macros: 3, System: 6, Result: 4, Custom: 5
+    };
 
     const DEFAULT_SETTINGS = {
         theme: 'auto',        // 'auto' | 'light' | 'dark'
+        themeSeed: '#00639B', // any hex; the engine builds every color role from it
+        themeDial: 'expressive', // 'calm' | 'standard' | 'expressive'
         pinLimit: 3,
         calculator: true,
         fuzzy: true
@@ -268,18 +276,49 @@
         });
     }
 
-    // Theme override is mirrored to localStorage (synchronous) so it applies
-    // before first paint; chrome.storage stays the source of truth.
-    function applyTheme(theme) {
-        const root = document.documentElement;
-        if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
-        else delete root.dataset.theme;
-        try { localStorage.ycpTheme = theme; } catch (e) {}
+    // Theme: mode, dial and the generated palette CSS are mirrored to localStorage
+    // (synchronous) so they apply before first paint; chrome.storage stays the source
+    // of truth. The engine module only loads when the seed or dial changed.
+    const THEME_VERSION = 3;
+    function injectThemeCss(css) {
+        let tag = document.getElementById('ycp-theme');
+        if (!tag) {
+            tag = document.createElement('style');
+            tag.id = 'ycp-theme';
+            document.head.appendChild(tag);
+        }
+        tag.textContent = css;
     }
-    try { applyTheme(localStorage.ycpTheme); } catch (e) {}
+    function applyMode(mode, dial) {
+        const root = document.documentElement;
+        if (mode === 'light' || mode === 'dark') root.dataset.theme = mode;
+        else delete root.dataset.theme;
+        if (dial) root.dataset.expressiveness = dial;
+    }
+    async function applyTheme(settings) {
+        const s = Object.assign({}, DEFAULT_SETTINGS, settings);
+        applyMode(s.theme, s.themeDial);
+        // Bump THEME_VERSION when the generated output changes, so cached themes regenerate
+        const key = `${THEME_VERSION}|${s.themeSeed}|${s.themeDial}`;
+        let cachedKey = null;
+        try {
+            localStorage.ycpTheme = s.theme;
+            localStorage.ycpDial = s.themeDial;
+            cachedKey = localStorage.ycpThemeKey;
+        } catch (e) {}
+        if (cachedKey === key && document.getElementById('ycp-theme')) return;
+        const engine = await import('./theme-engine.js');
+        const css = engine.themeCss({ seed: s.themeSeed, dial: s.themeDial });
+        injectThemeCss(css);
+        try { localStorage.ycpThemeKey = key; localStorage.ycpThemeCss = css; } catch (e) {}
+    }
+    try {
+        applyMode(localStorage.ycpTheme, localStorage.ycpDial);
+        if (localStorage.ycpThemeCss) injectThemeCss(localStorage.ycpThemeCss);
+    } catch (e) {}
 
     window.YCP = {
-        BUILTIN, CATEGORY_ORDER, DEFAULT_SETTINGS,
+        BUILTIN, CATEGORY_ORDER, CATEGORY_ACCENT, DEFAULT_SETTINGS,
         escapeHtml, fuzzyScore, frecency, recordUse,
         compute, convertUnits, evalArith, loadState, applyTheme
     };

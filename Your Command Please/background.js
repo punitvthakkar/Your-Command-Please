@@ -2,6 +2,63 @@
    Your Command Please — background service worker
    ============================================================ */
 
+/* -------- Toolbar icon: Cookie ⌘ redrawn in the theme's colors --------
+   Colors come straight from the saved theme (settings.themeSeed / themeDial in sync storage),
+   so the icon is right after a reload, a browser restart or a theme change on any page. */
+import { actionIconColors, DEFAULT_THEME } from './theme-engine.js';
+
+const CMD_PATH = 'M48 92V36A12 12 0 1 0 36 48H92A12 12 0 1 0 80 36V92A12 12 0 1 0 92 80H36A12 12 0 1 0 48 92Z';
+
+// 9-scallop cookie, full-bleed in a 128 box so it matches other toolbar icons' weight
+function cookiePath() {
+    const p = new Path2D();
+    for (let i = 0; i < 360; i++) {
+        const t = (i / 360) * 2 * Math.PI;
+        const r = 59 + 5 * Math.cos(9 * t);
+        const x = 64 + r * Math.cos(t - Math.PI / 2), y = 64 + r * Math.sin(t - Math.PI / 2);
+        if (i) p.lineTo(x, y); else p.moveTo(x, y);
+    }
+    p.closePath();
+    return p;
+}
+
+function drawActionIcon(colors) {
+    if (!colors || !colors.fill) return;
+    const imageData = {};
+    for (const size of [16, 32]) {
+        const ctx = new OffscreenCanvas(size, size).getContext('2d');
+        ctx.scale(size / 128, size / 128);
+        ctx.fillStyle = colors.fill;
+        ctx.fill(cookiePath());
+        // A thin stroke keeps the four loops open; heavier weights clog into an ✕ at 16px
+        ctx.translate(64, 64); ctx.scale(.72, .72); ctx.translate(-64, -64);
+        ctx.strokeStyle = colors.glyph;
+        ctx.lineWidth = 7 / .72;
+        ctx.lineJoin = 'round';
+        ctx.stroke(new Path2D(CMD_PATH));
+        imageData[size] = ctx.getImageData(0, 0, size, size);
+    }
+    chrome.action.setIcon({ imageData });
+}
+
+function restoreActionIcon() {
+    chrome.storage.sync.get('settings', ({ settings }) => {
+        const s = settings || {};
+        drawActionIcon(actionIconColors({ seed: s.themeSeed || DEFAULT_THEME.seed, dial: s.themeDial || DEFAULT_THEME.dial }));
+    });
+}
+chrome.runtime.onStartup.addListener(restoreActionIcon);
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.local.remove('actionIcon'); // colors cached by 2.1 builds; no longer used
+    restoreActionIcon();
+});
+chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'sync' || !changes.settings) return;
+    const before = changes.settings.oldValue || {}, after = changes.settings.newValue || {};
+    if (before.themeSeed !== after.themeSeed || before.themeDial !== after.themeDial) restoreActionIcon();
+});
+restoreActionIcon();
+
 function activeTab() {
     return new Promise((resolve) => {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => resolve(tabs[0]));
